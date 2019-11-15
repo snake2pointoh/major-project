@@ -1,3 +1,5 @@
+
+
 class PlayerCharacter{
     constructor(x1, y1, speed){
       this.x = x1
@@ -117,9 +119,9 @@ class PlayerCharacter{
       }
     }
   
-  }
+}
   
-  class Hotbar{
+class Hotbar{
     constructor(y1,tileCount1,tileSize1){
       this.y = y1;
   
@@ -139,9 +141,9 @@ class PlayerCharacter{
         this.grid[i].draw()
       }
     }
-  }
+}
   
-  class Inventory{
+class Inventory{
     constructor(x1,y1,xsize1,ysize1,tileSize1){
       this.x = x1;
       this.y = y1;
@@ -175,7 +177,7 @@ class PlayerCharacter{
       //draw hotbar
       
     }
-  }
+}
   
   class InventoryTile{
     constructor(x1,y1,w1,h1,isHotbar1){
