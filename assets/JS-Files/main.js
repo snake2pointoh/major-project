@@ -28,13 +28,7 @@ let resumeButton;
 
 let saveLoad = [];
 
-//textures//
-let textures = [];
-let swordTextures = [];
-let bowTextures = [];
-let staffTextures = [];
-let potionTextures = [];
-
+//editor stuffs//
 let edditorUiBackground = [];
 let edditorUiButtons = [];
 let edditorBrushes = [];
@@ -72,85 +66,74 @@ let itemCreatorType = "sword";
 complete item edditor
 */
 
-function preload(){
-  //textures//
-  textures[0] = new tile(loadImage('assets/Default.png'),false)//default
-  textures[1] = new tile(loadImage('assets/Grass.png'),false)//grass
-  textures[2] = new tile(loadImage('assets/Rock.png'),true)//rock
-
-  //item textures//
-  swordTextures[0] = loadImage('assets/sword_normal.png');
-  swordTextures[1] = loadImage('assets/sword_shiny.png');
-}
-
 function setup() {
   frameRate(60);
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
-  
+
   //menu buttons//
-  menuButtons[0] = new Button(width/2, height/2 + 40, 64, 64, "edditor")
-  menuButtons[1] = new Button(width/2, height/2 - 40, 64, 64, "game")
+  menuButtons[0] = new Button(width / 2, height / 2 + 40, 64, 64, "edditor")
+  menuButtons[1] = new Button(width / 2, height / 2 - 40, 64, 64, "game")
 
   //pause menu buttons//
-  pauseBackground = new UiBackground(width/2 -100, height/2 -200, 200, 400, 50, 10)
-  backButton = new Button(width/2, height/2 + 40, 64, 64, "back")
-  resumeButton = new Button(width/2, height/2 - 40, 64, 64, "resume")
+  pauseBackground = new UiBackground(width / 2 - 100, height / 2 - 200, 200, 400, 50, 10)
+  backButton = new Button(width / 2, height / 2 + 40, 64, 64, "back")
+  resumeButton = new Button(width / 2, height / 2 - 40, 64, 64, "resume")
 
   //player character//
-  Player = new PlayerCharacter(width/2, height/2, 5);
-  
-  //make map//
-  MainMap = new GridGen(400,400,64,textures[0])
-  
-  //edditor items & buttons//
-  edditorUiBackground[0] = new UiBackground(0, 100, 200, height-100, 50, 10);
-  edditorUiBackground[1] = new UiBackground(0,0,width,100,50,10);
-  edditorUiBackground[2] = new UiBackground(width-200, 100, 200, height-100, 50, 10);
+  Player = new PlayerCharacter(width / 2, height / 2, 5);
 
-  edditorUiButtons[0] = new ImageButton(50, 150 , 64, 64, textures[1]);
-  edditorUiButtons[1] = new ImageButton(150, 150 , 64, 64, textures[2]);
-  
-  Buttons[0] = new Button(width-50, 150 ,64, 64,"save");
-  Buttons[1] = new Button(width-150, 150 ,64, 64,"def map");
-  Buttons[2] = new Button(width-50, 250 ,64, 64,"custom map");
+  //make map//
+  MainMap = new GridGen(400, 400, 64, textures[0])
+
+  //edditor items & buttons//
+  edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 50, 10);
+  edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 50, 10);
+  edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 50, 10);
+
+  edditorUiButtons[0] = new ImageButton(50, 150, 64, 64, textures[1]);
+  edditorUiButtons[1] = new ImageButton(150, 150, 64, 64, textures[2]);
+
+  Buttons[0] = new Button(width - 50, 150, 64, 64, "save");
+  Buttons[1] = new Button(width - 150, 150, 64, 64, "def map");
+  Buttons[2] = new Button(width - 50, 250, 64, 64, "custom map");
 
   //item edditor buttons//
-  itemEdditorButtons[0] = new Button(50, 150 , 64, 64,"New Sword");
-  itemEdditorButtons[1] = new Button(150, 150 , 64, 64,"New Bow");
-  itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"New Staff");
-  itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"New Potion");
+  itemEdditorButtons[0] = new Button(50, 150, 64, 64, "New Sword");
+  itemEdditorButtons[1] = new Button(150, 150, 64, 64, "New Bow");
+  itemEdditorButtons[2] = new Button(50, 250, 64, 64, "New Staff");
+  itemEdditorButtons[3] = new Button(150, 250, 64, 64, "New Potion");
 
-  itemEdditorButtons[4] = new Button(width- 250, 150 , 64, 64,"Save Item");
+  itemEdditorButtons[4] = new Button(width - 250, 150, 64, 64, "Save Item");
   //item edditor text boxes//
-  itemEdditorText[0] = new TextBox(225, height-330, 200, 25,"Attack Range")
-  itemEdditorTextBoxes[0] = new TextInputBox(225, height -300, 200, 50, 4, true, 1000);
+  itemEdditorText[0] = new TextBox(225, height - 330, 200, 25, "Attack Range")
+  itemEdditorTextBoxes[0] = new TextInputBox(225, height - 300, 200, 50, 4, true, 1000);
 
-  itemEdditorText[1] = new TextBox(225, height-230, 200, 25,"Attack Speed")
-  itemEdditorTextBoxes[1] = new TextInputBox(225, height -200, 200, 50, 4, true, 1000);
+  itemEdditorText[1] = new TextBox(225, height - 230, 200, 25, "Attack Speed")
+  itemEdditorTextBoxes[1] = new TextInputBox(225, height - 200, 200, 50, 4, true, 1000);
 
-  itemEdditorText[2] = new TextBox(225, height-130, 200, 25,"Damage")
-  itemEdditorTextBoxes[2] = new TextInputBox(225, height -100, 200, 50, 4, true, 1000);
+  itemEdditorText[2] = new TextBox(225, height - 130, 200, 25, "Damage")
+  itemEdditorTextBoxes[2] = new TextInputBox(225, height - 100, 200, 50, 4, true, 1000);
 
-  itemEdditorTextBoxes[3] = new TextInputBox(width/2 - 150, 150, 300, 50, 20);
-  
-  edditorMenuButtons[0] = new Button(100,50,64,64,"map");
-  edditorMenuButtons[1] = new Button(200,50,64,64,"items");
+  itemEdditorTextBoxes[3] = new TextInputBox(width / 2 - 150, 150, 300, 50, 20);
 
-  itemEdditorSwordIconButtons[0] = new ImageButton(250, 150 , 64, 64, swordTextures[0]);
-  itemEdditorSwordIconButtons[1] = new ImageButton(250, 250 , 64, 64, swordTextures[1]);
+  edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map");
+  edditorMenuButtons[1] = new Button(200, 50, 64, 64, "items");
 
-  itemEdditorDemoIcon = new ImageBox(width/2 - 100,height/2 - 100,200,200,swordTextures[0]);
-  
+  itemEdditorSwordIconButtons[0] = new ImageButton(250, 150, 64, 64, swordTextures[0]);
+  itemEdditorSwordIconButtons[1] = new ImageButton(250, 250, 64, 64, swordTextures[1]);
+
+  itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
+
   //brush types//
-  edditorBrushes[0] = new Button(50,250,64,64,"Single");
-  edditorBrushes[1] = new Button(150,250,64,64,"Area");
-  
+  edditorBrushes[0] = new Button(50, 250, 64, 64, "Single");
+  edditorBrushes[1] = new Button(150, 250, 64, 64, "Area");
+
   //fill the saveLoad array//
   saveLoad = []
-  for(let y=0; y< MainMap.grid.length; y++){
-    for(let x=0; x< MainMap.grid[y].length; x++){
+  for (let y = 0; y < MainMap.grid.length; y++) {
+    for (let x = 0; x < MainMap.grid[y].length; x++) {
       MainMap.grid[y][x].save(saveLoad)
     }
   }
@@ -162,19 +145,19 @@ function setup() {
 function draw() {
   background(backgroundColour);
 
-  if(scene === "menu"){
+  if (scene === "menu") {
     menu()
   }
 
-  if(scene === "game"){
+  if (scene === "game") {
     game()
   }
-  
-  if(scene === "edditor"){
+
+  if (scene === "edditor") {
     edditor()
   }
 
-  if(paused === true){
+  if (paused === true) {
     pauseBackground.draw()
     backButton.draw()
     resumeButton.draw()
@@ -183,73 +166,64 @@ function draw() {
   //show fps//
   push()
   textSize(30)
-  text(Math.round(frameRate()), 10, 40,)
+  text(Math.round(frameRate()), 10, 40)
   pop()
 
 }
 
-function mapEdditor(mapGrid){
+function mapEdditor(mapGrid) {
   let mouseOnUi = false;
-  if(!paused){
+  if (!paused) {
     //update for 2d array//
-    for(let y = 0; y < mapGrid.length; y++){
-      for(let x = 0; x < mapGrid[y].length; x++){
+    for (let y = 0; y < mapGrid.length; y++) {
+      for (let x = 0; x < mapGrid[y].length; x++) {
         mouseOnUi = false;
-        for(let j = 0; j < edditorUiBackground.length; j++){
-          if(edditorUiBackground[j].mouseOverUi()){
+        for (let j = 0; j < edditorUiBackground.length; j++) {
+          if (edditorUiBackground[j].mouseOverUi()) {
             mouseOnUi = true
           }
         }
-        if(mouseOnUi === false){
-          if(brushMode === "Single"){
-            if(mouseIsPressed && mapGrid[y][x].mouseOverTile()){
+        if (mouseOnUi === false) {
+          if (brushMode === "Single") {
+            if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
               mapGrid[y][x].tile = selectedTexture
               mapGrid[y][x].hasCollision = selectedTexture.hasCollision
-              
+
             }
           }
         }
       }
     }
   }
-  //draw edditor ui//
-  
-  for(let i = 0; i < edditorUiButtons.length; i++){
-    edditorUiButtons[i].draw()
-  }
-  for(let i = 0; i < edditorBrushes.length; i++){
-    edditorBrushes[i].draw()
-  }
-  
 }
 
-function itemCreator(itemType){
+function itemCreator(itemType) {
   let item;
-  if(itemType === "sword"){
+  if (itemType === "sword") {
     item = new SwordItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
   }
 
-  if(itemType === "bow"){
+  if (itemType === "bow") {
     item = new BowItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
   }
 
-  if(itemType === "staff"){
+  if (itemType === "staff") {
     item = new StaffItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
   }
 
-  if(itemType === "potion"){
+  if (itemType === "potion") {
     item = new PotionItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
   }
 
   return item;
 }
 
-function loadMap(data){
+function loadMap(data) {
   console.log(data.saveData);
   saveLoad = data.saveData;
   let i = 0;
-  for(let y=0; y< MainMap.grid.length; y++){
-    for(let x=0; x< MainMap.grid[y].length; x++){
+  for (let y = 0; y < MainMap.grid.length; y++) {
+    for (let x = 0; x < MainMap.grid[y].length; x++) {
       MainMap.grid[y][x].load(saveLoad[i])
       i++
     }
@@ -257,18 +231,18 @@ function loadMap(data){
   console.log("Loaded");
 }
 
-function playerController(player){
-  if(!paused && canMove){
-    if(keyIsDown(87)){
+function playerController(player) {
+  if (!paused && canMove) {
+    if (keyIsDown(87)) {
       player.move("up")
     }
-    if(keyIsDown(83)){
+    if (keyIsDown(83)) {
       player.move("down")
     }
-    if(keyIsDown(65)){
+    if (keyIsDown(65)) {
       player.move("left")
     }
-    if(keyIsDown(68)){
+    if (keyIsDown(68)) {
       player.move("right")
     }
     //sprinting//
@@ -279,63 +253,62 @@ function playerController(player){
   }
 }
 
-function inventoryController(){
+function inventoryController() {
   //do
 }
 
 //load custom map save//
-function calledFromHTML(){
+function calledFromHTML() {
   jsonF = document.getElementById("Json-file").files[0];
   reader.readAsText(jsonF)
-  reader.onloadend = function(){
+  reader.onloadend = function () {
     json = JSON.parse(reader.result)
   }
 }
 
-function menu(){
-  for(let i = 0; i < menuButtons.length; i++){
-    menuButtons[i].draw()
-  }
+function menu() {
+  menuUi();
 }
 
-function game(){
+function game() {
   MainMap.draw()
-  playerController(Player)
+  //playerController(Player)
   Player.draw()
-  Player.collisionDetect(MainMap.grid)
+  //Player.collisionDetect(MainMap.grid)
 }
 
-function edditor(){
-  if(edditorMenu === "map"){
+function edditor() {
+  if (edditorMenu === "map") {
     MainMap.draw();
-    playerController(Player);
-    mapEdditor(MainMap.grid);
-    
-    if(brush != null){
+    //playerController(Player);
+    //mapEdditor(MainMap.grid);
+    mapEdditorUi();
+
+    if (brush != null) {
       brush.draw();
     }
   }
-  else if(edditorMenu === "items"){
+  else if (edditorMenu === "items") {
     itemEdditorUi();
   }
   edditorUi();
 }
 
-function resetVals(){
+function resetVals() {
   Player.left = true;
   Player.right = true;
   Player.top = true;
   Player.bottom = true;
-  Player.Inv.invOpen = false; 
+  Player.Inv.invOpen = false;
   Player.Hotbar.invOpen = false;
-  
+
   mapOffsetX = 0;
   mapOffsetY = 0;
-  
+
   showDebug = false;
   canMove = true;
   brushMode = "Single";
   brush = null;
-  
+
   paused = false;
 }
