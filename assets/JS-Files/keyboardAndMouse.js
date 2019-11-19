@@ -46,7 +46,7 @@ function keyPressed() {
 
 function mouseClicked() {
   let mouseOnUi = false;
-  if (scene === "edditor") {
+  if (scene === "editor") {
     mouseOnUi = false;
     for (let j = 0; j < edditorUiBackground.length; j++) {
       if (edditorUiBackground[j].mouseOverUi()) {
@@ -169,7 +169,7 @@ function mouseClicked() {
   if (scene === "menu") {
     if (menuButtons[0].mouseOn()) {
       resetVals()
-      scene = "edditor";
+      scene = "editor";
     }
     if (menuButtons[1].mouseOn()) {
       resetVals()

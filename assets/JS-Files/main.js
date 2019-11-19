@@ -15,6 +15,11 @@ let scene = "menu"
 
 const backgroundColour = 255;
 
+let physFPScounter = 0;
+let physFPS = 0;
+let lastMillis = 0
+let physMilliInterval = 15 
+
 let mapOffsetX = 0;
 let mapOffsetY = 0;
 let showDebug = false;
@@ -67,13 +72,13 @@ complete item edditor
 */
 
 function setup() {
-  frameRate(60);
+  frameRate(144);
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
 
   //menu buttons//
-  menuButtons[0] = new Button(width / 2, height / 2 + 40, 64, 64, "edditor")
+  menuButtons[0] = new Button(width / 2, height / 2 + 40, 64, 64, "editor")
   menuButtons[1] = new Button(width / 2, height / 2 - 40, 64, 64, "game")
 
   //pause menu buttons//
@@ -140,21 +145,26 @@ function setup() {
   console.log("saved");
 
   selectedTexture = textures[1]
+
+  //run physics code every 16 millis or every 60th of a second//
+  setInterval(doPhys,16)
+  setInterval(function(){physFPS = physFPScounter, physFPScounter = 0},1000)
+  
 }
 
 function draw() {
   background(backgroundColour);
 
   if (scene === "menu") {
-    menu()
+    drawMenu()
   }
 
   if (scene === "game") {
-    game()
+    drawGame()
   }
 
-  if (scene === "edditor") {
-    edditor()
+  if (scene === "editor") {
+    drawEditor()
   }
 
   if (paused === true) {
@@ -166,9 +176,17 @@ function draw() {
   //show fps//
   push()
   textSize(30)
+  fill(0,200,0)
   text(Math.round(frameRate()), 10, 40)
+  fill(200,0,0)
+  text(physFPS, 10, 80)
   pop()
 
+  //do physics//
+  // if(millis() > physMilliInterval + lastMillis){
+  //   lastMillis = millis()
+  //   doPhys()
+  // }
 }
 
 function mapEdditor(mapGrid) {
@@ -266,32 +284,28 @@ function calledFromHTML() {
   }
 }
 
-function menu() {
+function drawMenu() {
   menuUi();
 }
 
-function game() {
+function drawGame() {
   MainMap.draw()
-  //playerController(Player)
   Player.draw()
-  //Player.collisionDetect(MainMap.grid)
 }
 
-function edditor() {
+function drawEditor() {
   if (edditorMenu === "map") {
     MainMap.draw();
-    //playerController(Player);
-    //mapEdditor(MainMap.grid);
-    mapEdditorUi();
+    mapEditorUi();
 
     if (brush != null) {
       brush.draw();
     }
   }
   else if (edditorMenu === "items") {
-    itemEdditorUi();
+    itemEditorUi();
   }
-  edditorUi();
+  editorUi();
 }
 
 function resetVals() {

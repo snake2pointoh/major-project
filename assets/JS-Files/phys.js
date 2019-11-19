@@ -1,18 +1,14 @@
 
 
-// function setup() {
-//     frameRate(60);
-//     console.log("nerd")
-// }
-
-// function draw() {
-//     if (scene === "game") {
-//         gamePhys()
-//     }
-//     if (scene === "edditor") {
-//         edditorPhys()
-//     }
-// }
+function doPhys() {
+    if (scene === "game") {
+        gamePhys()
+    }
+    if (scene === "editor") {
+        edditorPhys()
+    }
+    physFPScounter ++;
+}
 
 function gamePhys() {
     playerController(Player)

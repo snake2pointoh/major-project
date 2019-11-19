@@ -1,6 +1,6 @@
 
 
-function itemEdditorUi() {
+function itemEditorUi() {
   for (let i = 0; i < itemEdditorButtons.length; i++) {
     itemEdditorButtons[i].draw()
   }
@@ -18,7 +18,7 @@ function itemEdditorUi() {
   itemEdditorDemoIcon.draw()
 }
 
-function mapEdditorUi(){
+function mapEditorUi(){
   for(let i = 0; i < edditorUiButtons.length; i++){
     edditorUiButtons[i].draw()
   }
@@ -33,7 +33,7 @@ function menuUi(){
   }
 }
 
-function edditorUi() {
+function editorUi() {
   for (let i = 0; i < edditorUiBackground.length; i++) {
     edditorUiBackground[i].draw()
   }
