@@ -202,6 +202,10 @@ class InventoryItem {
 }
 
 //items//
+class itemSpawnPoint{
+  constructor(x1,y1)
+}
+
 class ItemPickup {
   constructor(x1, y1, size1, item1) {
     this.x = x1;
@@ -209,6 +213,11 @@ class ItemPickup {
     this.w = size1;
     this.h = size1;
     this.item = item1
+  }
+  draw(){
+    push()
+    image(this.item.icon, this.x, this.y, this.w, this.h)
+    pop()
   }
 }
 

@@ -173,6 +173,7 @@ function mouseClicked() {
     }
     if (menuButtons[1].mouseOn()) {
       resetVals()
+      playing = true;
       scene = "game";
     }
   }

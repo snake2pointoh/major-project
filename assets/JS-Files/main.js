@@ -15,15 +15,19 @@ let scene = "menu"
 
 const backgroundColour = 255;
 
+let fpsCounter = 0;
 let physFPScounter = 0;
 let physFPS = 0;
-let lastMillis = 0
-let physMilliInterval = 15 
+let lastMillis = 0;
+let lastFPSMillis = 0;
+let physMilliInterval = 16;
 
 let mapOffsetX = 0;
 let mapOffsetY = 0;
 let showDebug = false;
 let canMove = true;
+
+let playing = false;
 
 //pause menu//
 let paused = false;
@@ -146,10 +150,6 @@ function setup() {
 
   selectedTexture = textures[1]
 
-  //run physics code every 16 millis or every 60th of a second//
-  setInterval(doPhys,16)
-  setInterval(function(){physFPS = physFPScounter, physFPScounter = 0},1000)
-  
 }
 
 function draw() {
@@ -177,16 +177,24 @@ function draw() {
   push()
   textSize(30)
   fill(0,200,0)
-  text(Math.round(frameRate()), 10, 40)
+  text(fpsCounter, 10, 40)
   fill(200,0,0)
   text(physFPS, 10, 80)
   pop()
 
-  //do physics//
-  // if(millis() > physMilliInterval + lastMillis){
-  //   lastMillis = millis()
-  //   doPhys()
-  // }
+  //do physics every 16 millis//
+  if(millis() > lastMillis + physMilliInterval){
+    lastMillis = millis()
+    doPhys()
+  }
+
+  //update fps counters every second//
+  if(millis() > lastFPSMillis + 1000){
+    lastFPSMillis = millis()
+    physFPS = physFPScounter
+    physFPScounter = 0
+    fpsCounter = Math.round(frameRate())
+  }
 }
 
 function mapEdditor(mapGrid) {
@@ -325,4 +333,5 @@ function resetVals() {
   brush = null;
 
   paused = false;
+  playing = false;
 }
