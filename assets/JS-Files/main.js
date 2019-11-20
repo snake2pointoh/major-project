@@ -16,11 +16,7 @@ let scene = "menu"
 const backgroundColour = 255;
 
 let fpsCounter = 0;
-let physFPScounter = 0;
-let physFPS = 0;
-let lastMillis = 0;
 let lastFPSMillis = 0;
-let physMilliInterval = 16;
 
 let mapOffsetX = 0;
 let mapOffsetY = 0;
@@ -76,7 +72,7 @@ complete item edditor
 */
 
 function setup() {
-  frameRate(144);
+  frameRate(60);
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
@@ -149,7 +145,6 @@ function setup() {
   console.log("saved");
 
   selectedTexture = textures[1]
-
 }
 
 function draw() {
@@ -179,22 +174,14 @@ function draw() {
   fill(0,200,0)
   text(fpsCounter, 10, 40)
   fill(200,0,0)
-  text(physFPS, 10, 80)
   pop()
-
-  //do physics every 16 millis//
-  if(millis() > lastMillis + physMilliInterval){
-    lastMillis = millis()
-    doPhys()
-  }
 
   //update fps counters every second//
   if(millis() > lastFPSMillis + 1000){
     lastFPSMillis = millis()
-    physFPS = physFPScounter
-    physFPScounter = 0
     fpsCounter = Math.round(frameRate())
   }
+  doPhys()
 }
 
 function mapEdditor(mapGrid) {

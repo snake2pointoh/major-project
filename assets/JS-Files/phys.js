@@ -7,7 +7,6 @@ function doPhys() {
     if (scene === "editor") {
         edditorPhys()
     }
-    physFPScounter ++;
 }
 
 function gamePhys() {

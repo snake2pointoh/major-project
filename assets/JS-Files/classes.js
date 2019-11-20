@@ -203,7 +203,9 @@ class InventoryItem {
 
 //items//
 class itemSpawnPoint{
-  constructor(x1,y1)
+  constructor(x1,y1){
+    
+  }
 }
 
 class ItemPickup {
