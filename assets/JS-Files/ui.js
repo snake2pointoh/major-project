@@ -25,6 +25,9 @@ function mapEditorUi(){
   for(let i = 0; i < edditorBrushes.length; i++){
     edditorBrushes[i].draw()
   }
+  for(let i = 0; i < edditorItemButtons.length; i++){
+    edditorItemButtons[i].draw()
+  }
 }
 
 function menuUi(){

@@ -37,6 +37,7 @@ let saveLoad = [];
 let edditorUiBackground = [];
 let edditorUiButtons = [];
 let edditorBrushes = [];
+let edditorItemButtons = [];
 let Buttons = [];
 let menuButtons = [];
 let edditorMenuButtons = [];
@@ -52,7 +53,7 @@ const reader = new FileReader();
 let json;
 
 //items and inventory//
-let worldItems = [];
+let worldItems = [ [],[],[],[] ]; //sword, bow, staff, potion//array order//
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
 let itemEdditorText = [];
@@ -96,6 +97,8 @@ function setup() {
   edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 50, 10);
   edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 50, 10);
   edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 50, 10);
+
+  edditorItemButtons[0] = new Button(50, 350, 64, 64,"Item spawn point");
 
   edditorUiButtons[0] = new ImageButton(50, 150, 64, 64, textures[1]);
   edditorUiButtons[1] = new ImageButton(150, 150, 64, 64, textures[2]);
@@ -208,6 +211,12 @@ function mapEdditor(mapGrid) {
       }
     }
   }
+}
+
+function randomItemGen(itemType){
+  let item;
+
+  return item;
 }
 
 function itemCreator(itemType) {

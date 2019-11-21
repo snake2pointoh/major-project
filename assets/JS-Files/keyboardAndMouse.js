@@ -1,7 +1,7 @@
 
 
 function keyTyped() {
-  if (scene === "edditor") {
+  if (scene === "editor") {
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
@@ -21,7 +21,7 @@ function keyPressed() {
     paused = !paused
   }
 
-  if (scene === "edditor") {
+  if (scene === "editor") {
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
@@ -68,6 +68,7 @@ function mouseClicked() {
           canMove = true;
         }
       }
+
       //area Brush//
       if (brushMode === "Area") {
         if (!mouseOnUi) {
@@ -82,6 +83,10 @@ function mouseClicked() {
             canMove = true;
           }
         }
+      }
+      //select item spawn point//
+      if(edditorItemButtons[0].mouseOn()){
+        brushMode = "ItemSpawn"
       }
     }
     if (edditorMenu === "items") {
@@ -127,7 +132,18 @@ function mouseClicked() {
         itemEdditorText[2].textData = "Strength"
       }
       if (itemEdditorButtons[4].mouseOn()) { //saveItem button//
-        worldItems.push(itemCreator(itemCreatorType));
+        if(itemCreatorType === "sword"){
+          worldItems[0].push(itemCreator(itemCreatorType));
+        }
+        if(itemCreatorType === "bow"){
+          worldItems[1].push(itemCreator(itemCreatorType));
+        }
+        if(itemCreatorType === "staff"){
+          worldItems[2].push(itemCreator(itemCreatorType));
+        }
+        if(itemCreatorType === "potion"){
+          worldItems[3].push(itemCreator(itemCreatorType));
+        }
       }
     }
 

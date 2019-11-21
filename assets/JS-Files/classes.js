@@ -203,8 +203,20 @@ class InventoryItem {
 
 //items//
 class itemSpawnPoint{
-  constructor(x1,y1){
-    
+  constructor(x1,y1,w1,h1,itemtype1){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.itemType = itemtype1;
+  }
+  draw(){
+    rect(this.x, this.y, this.w, this.h)
+  }
+  spawnItem(){
+    if(this.itemType === "sword"){
+      //todo//
+    }
   }
 }
 
@@ -567,6 +579,8 @@ class GridItem {
 
     this.Xpos = this.x + this.offsetX
     this.Ypos = this.y + this.offsetY
+
+    this.itemSpawner = null;
   }
 
 
@@ -578,6 +592,9 @@ class GridItem {
       push()
       image(this.tile.texture, this.Xpos, this.Ypos, this.w, this.h)
       pop()
+      if(this.itemSpawner !== null && playing === false){
+        this.itemSpawner.draw()
+      }
     }
   }
 
