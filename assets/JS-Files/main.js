@@ -53,6 +53,7 @@ const reader = new FileReader();
 let json;
 
 //items and inventory//
+let itemSpawners = [];
 let worldItems = [ [],[],[],[] ]; //sword, bow, staff, potion//array order//
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
@@ -119,7 +120,7 @@ function setup() {
   itemEdditorTextBoxes[0] = new TextInputBox(225, height - 300, 200, 50, 4, true, 1000);
 
   itemEdditorText[1] = new TextBox(225, height - 230, 200, 25, "Attack Speed")
-  itemEdditorTextBoxes[1] = new TextInputBox(225, height - 200, 200, 50, 4, true, 1000);
+  itemEdditorTextBoxes[1] = new TextInputBox(225, height - 200, 200, 50, 4, true, 5000);
 
   itemEdditorText[2] = new TextBox(225, height - 130, 200, 25, "Damage")
   itemEdditorTextBoxes[2] = new TextInputBox(225, height - 100, 200, 50, 4, true, 1000);
@@ -215,7 +216,9 @@ function mapEdditor(mapGrid) {
 
 function randomItemGen(itemType){
   let item;
-
+  if(itemType === "sword"){
+    item = new SwordItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "sword", swordTextures[Math.round(random(0, swordTextures.length))])
+  }
   return item;
 }
 
@@ -295,6 +298,9 @@ function drawMenu() {
 function drawGame() {
   MainMap.draw()
   Player.draw()
+  for(let i = 0; i < itemSpawners.length;i++){
+    itemSpawners[i].draw()
+  }
 }
 
 function drawEditor() {
@@ -310,6 +316,13 @@ function drawEditor() {
     itemEditorUi();
   }
   editorUi();
+}
+
+function startGame(){
+  playing = true;
+  for(let i = 0;i < itemSpawners.length; i++){
+    itemSpawners[i].spawnItem()
+  }
 }
 
 function resetVals() {

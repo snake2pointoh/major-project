@@ -203,20 +203,50 @@ class InventoryItem {
 
 //items//
 class itemSpawnPoint{
-  constructor(x1,y1,w1,h1,itemtype1){
+  constructor(x1,y1,size1,itemtype1){
     this.x = x1;
     this.y = y1;
-    this.w = w1;
-    this.h = h1;
+    this.w = size1;
+    this.h = size1;
     this.itemType = itemtype1;
+    this.pickUp;
+
+    this.xPos = this.x;
+    this.yPos = this.y;
   }
   draw(){
-    rect(this.x, this.y, this.w, this.h)
+    this.xPos = this.x + mapOffsetX;
+    this.yPos = this.y + mapOffsetY;
+    if((this.xPos < width && this.xPos > 0) && (this.yPos < height && this.yPos > 0)){
+      if(playing){
+        if(this.pickUp !== undefined){
+          this.pickUp.draw()
+        }
+      }
+      else{
+        push()
+        fill(0,200,0);
+        rect(this.xPos, this.yPos, this.w, this.h);
+        pop()
+      }
+    }
   }
   spawnItem(){
+    let item
     if(this.itemType === "sword"){
-      //todo//
+      if(worldItems[0].length > 0){
+        if(random(0,100) < 31){
+          item = worldItems[0][Math.round(random(0, worldItems[0].length))]
+        }
+        else{
+          item = randomItemGen(this.itemType)
+        }
+      }
+      else{
+        item = randomItemGen(this.itemType)
+      }
     }
+    this.pickUp = new ItemPickup(this.x, this.y, this.w ,item)
   }
 }
 
@@ -227,10 +257,15 @@ class ItemPickup {
     this.w = size1;
     this.h = size1;
     this.item = item1
+
+    this.xPos = this.x;
+    this.yPos = this.y;
   }
   draw(){
+    this.xPos = this.x + mapOffsetX;
+    this.yPos = this.y + mapOffsetY;
     push()
-    image(this.item.icon, this.x, this.y, this.w, this.h)
+    image(this.item.icon, this.xPos, this.yPos, this.w, this.h)
     pop()
   }
 }
@@ -361,6 +396,7 @@ class Button {
     fill(0)
     textSize(16)
     text(this.name, this.x + 2, this.y + 2, this.w, this.h)
+    //text(str, x, y, x2, y2)
     pop()
   }
   mouseOn() {

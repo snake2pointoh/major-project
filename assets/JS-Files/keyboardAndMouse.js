@@ -86,7 +86,7 @@ function mouseClicked() {
       }
       //select item spawn point//
       if(edditorItemButtons[0].mouseOn()){
-        brushMode = "ItemSpawn"
+        brushMode = "ItemSpawn" // todo //
       }
     }
     if (edditorMenu === "items") {
@@ -189,7 +189,7 @@ function mouseClicked() {
     }
     if (menuButtons[1].mouseOn()) {
       resetVals()
-      playing = true;
+      startGame()
       scene = "game";
     }
   }
