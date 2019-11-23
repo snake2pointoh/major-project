@@ -86,8 +86,12 @@ function mouseClicked() {
       }
       //select item spawn point//
       if(edditorItemButtons[0].mouseOn()){
-        brushMode = "ItemSpawn" // todo //
+        brushMode = "ItemSpawnAdd"
       }
+      if(edditorItemButtons[1].mouseOn()){
+        brushMode = "ItemSpawnRemove"
+      }
+
     }
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {

@@ -217,7 +217,7 @@ class itemSpawnPoint{
   draw(){
     this.xPos = this.x + mapOffsetX;
     this.yPos = this.y + mapOffsetY;
-    if((this.xPos < width && this.xPos > 0) && (this.yPos < height && this.yPos > 0)){
+    if((this.xPos < width && this.xPos > -this.w) && (this.yPos < height && this.yPos > -this.h)){
       if(playing){
         if(this.pickUp !== undefined){
           this.pickUp.draw()
@@ -616,7 +616,7 @@ class GridItem {
     this.Xpos = this.x + this.offsetX
     this.Ypos = this.y + this.offsetY
 
-    this.itemSpawner = null;
+    this.itemSpawner;
   }
 
 
@@ -628,7 +628,7 @@ class GridItem {
       push()
       image(this.tile.texture, this.Xpos, this.Ypos, this.w, this.h)
       pop()
-      if(this.itemSpawner !== null && playing === false){
+      if(this.itemSpawner !== undefined){
         this.itemSpawner.draw()
       }
     }

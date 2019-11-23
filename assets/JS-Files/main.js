@@ -53,7 +53,8 @@ const reader = new FileReader();
 let json;
 
 //items and inventory//
-let itemSpawners = [];
+//walet itemSpawners = [];
+
 let worldItems = [ [],[],[],[] ]; //sword, bow, staff, potion//array order//
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
@@ -99,7 +100,8 @@ function setup() {
   edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 50, 10);
   edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 50, 10);
 
-  edditorItemButtons[0] = new Button(50, 350, 64, 64,"Item spawn point");
+  edditorItemButtons[0] = new Button(50, 350, 64, 64,"Item Spawn Add");
+  edditorItemButtons[1] = new Button(150, 350, 64, 64,"Item Spawn Remove");
 
   edditorUiButtons[0] = new ImageButton(50, 150, 64, 64, textures[1]);
   edditorUiButtons[1] = new ImageButton(150, 150, 64, 64, textures[2]);
@@ -205,7 +207,16 @@ function mapEdditor(mapGrid) {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
               mapGrid[y][x].tile = selectedTexture
               mapGrid[y][x].hasCollision = selectedTexture.hasCollision
-
+            }
+          }
+          if (brushMode === "ItemSpawnAdd") {
+            if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
+              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, 44, "sword")
+            }
+          }
+          if (brushMode === "ItemSpawnRemove") {
+            if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
+              mapGrid[y][x].itemSpawner = undefined;
             }
           }
         }
@@ -217,7 +228,7 @@ function mapEdditor(mapGrid) {
 function randomItemGen(itemType){
   let item;
   if(itemType === "sword"){
-    item = new SwordItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "sword", swordTextures[Math.round(random(0, swordTextures.length))])
+    item = new SwordItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "sword", swordTextures[Math.round(random(0, swordTextures.length-1))])
   }
   return item;
 }
@@ -297,10 +308,10 @@ function drawMenu() {
 
 function drawGame() {
   MainMap.draw()
+  // for(let i = 0; i < itemSpawners.length;i++){
+  //   itemSpawners[i].draw()
+  // }
   Player.draw()
-  for(let i = 0; i < itemSpawners.length;i++){
-    itemSpawners[i].draw()
-  }
 }
 
 function drawEditor() {
@@ -320,8 +331,12 @@ function drawEditor() {
 
 function startGame(){
   playing = true;
-  for(let i = 0;i < itemSpawners.length; i++){
-    itemSpawners[i].spawnItem()
+  for (let y = 0; y < MainMap.grid.length; y++) {
+    for (let x = 0; x < MainMap.grid[y].length; x++) {
+      if(MainMap.grid[y][x].itemSpawner !== undefined){
+        MainMap.grid[y][x].itemSpawner.spawnItem()
+      }
+    }
   }
 }
 
