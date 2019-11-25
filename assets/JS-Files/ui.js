@@ -19,14 +19,23 @@ function itemEditorUi() {
 }
 
 function mapEditorUi(){
-  for(let i = 0; i < edditorUiButtons.length; i++){
-    edditorUiButtons[i].draw()
+  for(let i = 0; i < edditorMapMenuButtons.length; i++){
+    edditorMapMenuButtons[i].draw()
   }
-  for(let i = 0; i < edditorBrushes.length; i++){
-    edditorBrushes[i].draw()
+
+  if(edditorMapMenu === "tiles"){
+    for(let i = 0; i < edditorUiButtons.length; i++){
+      edditorUiButtons[i].draw()
+    }
+    for(let i = 0; i < edditorBrushes.length; i++){
+      edditorBrushes[i].draw()
+    }
   }
-  for(let i = 0; i < edditorItemButtons.length; i++){
-    edditorItemButtons[i].draw()
+
+  if(edditorMapMenu === "items"){
+    for(let i = 0; i < edditorItemButtons.length; i++){
+      edditorItemButtons[i].draw()
+    }
   }
 }
 

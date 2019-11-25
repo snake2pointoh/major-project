@@ -41,8 +41,10 @@ let edditorItemButtons = [];
 let Buttons = [];
 let menuButtons = [];
 let edditorMenuButtons = [];
+let edditorMapMenuButtons = [];
 let brushMode = "Single";
 let edditorMenu = "map"
+let edditorMapMenu = "tiles"
 let brush = null;
 
 let selectedTexture;
@@ -100,12 +102,22 @@ function setup() {
   edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 50, 10);
   edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 50, 10);
 
-  edditorItemButtons[0] = new Button(50, 350, 64, 64,"Item Spawn Add");
-  edditorItemButtons[1] = new Button(150, 350, 64, 64,"Item Spawn Remove");
+  edditorMapMenuButtons[0] = new Button(50,150,64,64,"Tiles")
+  edditorMapMenuButtons[1] = new Button(150,150,64,64,"Items")
 
-  edditorUiButtons[0] = new ImageButton(50, 150, 64, 64, textures[1]);
-  edditorUiButtons[1] = new ImageButton(150, 150, 64, 64, textures[2]);
+  //item spawn buttons//
+  edditorItemButtons[0] = new Button(50, 250, 64, 64,"Item Spawn Add");
+  edditorItemButtons[1] = new Button(150, 250, 64, 64,"Item Spawn Remove");
 
+  //texture buttons//
+  edditorUiButtons[0] = new ImageButton(50, 350, 64, 64, textures[1]);
+  edditorUiButtons[1] = new ImageButton(150, 350, 64, 64, textures[2]);
+
+  //brush types//
+  edditorBrushes[0] = new Button(50, 250, 64, 64, "Single");
+  edditorBrushes[1] = new Button(150, 250, 64, 64, "Area");
+
+  //save load buttons//
   Buttons[0] = new Button(width - 50, 150, 64, 64, "save");
   Buttons[1] = new Button(width - 150, 150, 64, 64, "def map");
   Buttons[2] = new Button(width - 50, 250, 64, 64, "custom map");
@@ -117,6 +129,7 @@ function setup() {
   itemEdditorButtons[3] = new Button(150, 250, 64, 64, "New Potion");
 
   itemEdditorButtons[4] = new Button(width - 250, 150, 64, 64, "Save Item");
+
   //item edditor text boxes//
   itemEdditorText[0] = new TextBox(225, height - 330, 200, 25, "Attack Range")
   itemEdditorTextBoxes[0] = new TextInputBox(225, height - 300, 200, 50, 4, true, 1000);
@@ -137,9 +150,7 @@ function setup() {
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
-  //brush types//
-  edditorBrushes[0] = new Button(50, 250, 64, 64, "Single");
-  edditorBrushes[1] = new Button(150, 250, 64, 64, "Area");
+  
 
   //fill the saveLoad array//
   saveLoad = []
@@ -211,7 +222,7 @@ function mapEdditor(mapGrid) {
           }
           if (brushMode === "ItemSpawnAdd") {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
-              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, "sword")
+              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, "sword",)
             }
           }
           if (brushMode === "ItemSpawnRemove") {

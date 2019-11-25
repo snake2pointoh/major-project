@@ -54,42 +54,56 @@ function mouseClicked() {
       }
     }
     if (edditorMenu === "map") {
-      //select what tile to paint//
-      for (let i = 0; i < edditorUiButtons.length; i++) {
-        if (edditorUiButtons[i].mouseOn() && mouseButton === LEFT) {
-          selectedTexture = edditorUiButtons[i].tile
-        }
+      if(edditorMapMenuButtons[0].mouseOn()){
+        edditorMapMenu = "tiles"
+        brushMode = "Single"
       }
-      //select brush bode//
-      for (let i = 0; i < edditorBrushes.length; i++) {
-        if (edditorBrushes[i].mouseOn()) {
-          brushMode = edditorBrushes[i].name
-          brush = null;
-          canMove = true;
-        }
+      if(edditorMapMenuButtons[1].mouseOn()){
+        edditorMapMenu = "items"
+        brushMode = "ItemSpawnAdd"
       }
 
-      //area Brush//
-      if (brushMode === "Area") {
-        if (!mouseOnUi) {
-          if (brush === null) {
-            brush = new areaBrush(mouseX, mouseY)
-            canMove = false;
+      if(edditorMapMenu === "tiles"){
+        //select what tile to paint//
+        for (let i = 0; i < edditorUiButtons.length; i++) {
+          if (edditorUiButtons[i].mouseOn() && mouseButton === LEFT) {
+            selectedTexture = edditorUiButtons[i].tile
           }
-          else {
-            brush.updateSize(mouseX, mouseY)
-            brush.changeTiles(MainMap.grid);
+        }
+        //select brush bode//
+        for (let i = 0; i < edditorBrushes.length; i++) {
+          if (edditorBrushes[i].mouseOn()) {
+            brushMode = edditorBrushes[i].name
             brush = null;
             canMove = true;
           }
         }
+  
+        //area Brush//
+        if (brushMode === "Area") {
+          if (!mouseOnUi) {
+            if (brush === null) {
+              brush = new areaBrush(mouseX, mouseY)
+              canMove = false;
+            }
+            else {
+              brush.updateSize(mouseX, mouseY)
+              brush.changeTiles(MainMap.grid);
+              brush = null;
+              canMove = true;
+            }
+          }
+        }
       }
+
       //select item spawn point//
-      if(edditorItemButtons[0].mouseOn()){
-        brushMode = "ItemSpawnAdd"
-      }
-      if(edditorItemButtons[1].mouseOn()){
-        brushMode = "ItemSpawnRemove"
+      if(edditorMapMenu === "items"){
+        if(edditorItemButtons[0].mouseOn()){
+          brushMode = "ItemSpawnAdd"
+        }
+        if(edditorItemButtons[1].mouseOn()){
+          brushMode = "ItemSpawnRemove"
+        }
       }
 
     }

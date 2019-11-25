@@ -203,13 +203,19 @@ class InventoryItem {
 
 //items//
 class itemSpawnPoint{
-  constructor(x1,y1,size1,itemtype1){
+  constructor(x1,y1,size1,itemtype1,randonly1){
     this.x = x1;
     this.y = y1;
     this.w = size1;
     this.h = size1;
     this.itemType = itemtype1;
     this.pickUp;
+    if(randonly1 === undefined){
+      this.randOnly = false;
+    }
+    else{
+      this.randOnly = randonly1;
+    }
 
     this.xPos = this.x;
     this.yPos = this.y;
@@ -234,7 +240,7 @@ class itemSpawnPoint{
   spawnItem(){
     let item
     if(this.itemType === "sword"){
-      if(worldItems[0].length > 0){
+      if(worldItems[0].length > 0 && this.randOnly === false){
         if(random(0,100) < 31){
           item = worldItems[0][Math.round(random(0, worldItems[0].length))]
         }
