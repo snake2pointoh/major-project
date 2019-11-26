@@ -203,7 +203,7 @@ class InventoryItem {
 
 //items//
 class itemSpawnPoint{
-  constructor(x1,y1,size1,itemtype1,randonly1){
+  constructor(x1,y1,size1,itemtype1,randonly1,custonly1,custitem1){
     this.x = x1;
     this.y = y1;
     this.w = size1;
@@ -216,6 +216,22 @@ class itemSpawnPoint{
     else{
       this.randOnly = randonly1;
     }
+    
+    if(custonly1 === undefined){
+      this.custOnly = false;
+    }
+    else{
+      this.custOnly = custonly1;
+    }
+
+    if(custitem1 === undefined){
+      this.custItem = null;
+    }
+    else{
+      this.custItem = custitem1;
+    }
+
+    
 
     this.xPos = this.x;
     this.yPos = this.y;
@@ -240,16 +256,24 @@ class itemSpawnPoint{
   spawnItem(){
     let item
     if(this.itemType === "sword"){
-      if(worldItems[0].length > 0 && this.randOnly === false){
-        if(random(0,100) < 31){
-          item = worldItems[0][Math.round(random(0, worldItems[0].length))]
+      if(this.custOnly === true && worldItems[0].length > 0 ){
+        if(this.custItem === null){
+          item = worldItems[0][Math.round(random(0, worldItems[0].length - 1))]
+        }
+        else item = this.custItem
+      }
+      else{
+        if(worldItems[0].length > 0 && this.randOnly === false){
+          if(random(0,100) < 31){
+            item = worldItems[0][Math.round(random(0, worldItems[0].length - 1))]
+          }
+          else{
+            item = randomItemGen(this.itemType)
+          }
         }
         else{
           item = randomItemGen(this.itemType)
         }
-      }
-      else{
-        item = randomItemGen(this.itemType)
       }
     }
     this.pickUp = new ItemPickup(this.x, this.y, this.w ,item)

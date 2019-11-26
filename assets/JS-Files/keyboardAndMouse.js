@@ -104,6 +104,22 @@ function mouseClicked() {
         if(edditorItemButtons[1].mouseOn()){
           brushMode = "ItemSpawnRemove"
         }
+        if(edditorItemButtons[2].mouseOn()){
+          randomOnlyItems = true;
+          customOnlyItems = false;
+        }
+        
+        if(edditorItemButtons[3].mouseOn()){
+          randomOnlyItems = false;
+          customOnlyItems = true;
+        }
+        if(edditorItemButtons[4].mouseOn()){
+          randomOnlyItems = false;
+          customOnlyItems = false;
+        }
+        if(edditorItemButtons[5].mouseOn()){
+          customItem = null;
+        }
       }
 
     }

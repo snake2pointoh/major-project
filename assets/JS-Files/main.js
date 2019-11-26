@@ -54,9 +54,12 @@ var jsonF;
 const reader = new FileReader();
 let json;
 
-//items and inventory//
-//walet itemSpawners = [];
+//spawner settings//
+let randomOnlyItems = false;
+let customOnlyItems = false;
+let customItem = null;
 
+//items and inventory//
 let worldItems = [ [],[],[],[] ]; //sword, bow, staff, potion//array order//
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
@@ -108,6 +111,10 @@ function setup() {
   //item spawn buttons//
   edditorItemButtons[0] = new Button(50, 250, 64, 64,"Item Spawn Add");
   edditorItemButtons[1] = new Button(150, 250, 64, 64,"Item Spawn Remove");
+  edditorItemButtons[2] = new Button(50, 350, 64, 64,"Rand Item Only");
+  edditorItemButtons[3] = new Button(150, 350, 64, 64,"Custom Item Only");
+  edditorItemButtons[4] = new Button(50, 450, 64, 64,"All Items");
+  edditorItemButtons[5] = new Button(150, 450, 64, 64,"All Custom Items");
 
   //texture buttons//
   edditorUiButtons[0] = new ImageButton(50, 350, 64, 64, textures[1]);
@@ -222,7 +229,7 @@ function mapEdditor(mapGrid) {
           }
           if (brushMode === "ItemSpawnAdd") {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
-              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, "sword",)
+              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, "sword", randomOnlyItems, customOnlyItems, customItem)
             }
           }
           if (brushMode === "ItemSpawnRemove") {
