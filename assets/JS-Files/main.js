@@ -73,6 +73,7 @@ let itemEdditorPotionIconButtons = [];
 
 let itemCreatorType = "sword";
 
+let testButtonArea;
 
 //TODO//
 /*
@@ -101,28 +102,29 @@ function setup() {
   MainMap = new GridGen(400, 400, 64, textures[0])
 
   //edditor items & buttons//
-  edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 50, 10);
-  edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 50, 10);
-  edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 50, 10);
+  edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 80, 100);
+  edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 80, 100);
+  edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 80, 100);
 
   edditorMapMenuButtons[0] = new Button(50,150,64,64,"Tiles")
   edditorMapMenuButtons[1] = new Button(150,150,64,64,"Items")
 
   //item spawn buttons//
-  edditorItemButtons[0] = new Button(50, 250, 64, 64,"Item Spawn Add");
-  edditorItemButtons[1] = new Button(150, 250, 64, 64,"Item Spawn Remove");
-  edditorItemButtons[2] = new Button(50, 350, 64, 64,"Rand Item Only");
-  edditorItemButtons[3] = new Button(150, 350, 64, 64,"Custom Item Only");
-  edditorItemButtons[4] = new Button(50, 450, 64, 64,"All Items");
-  edditorItemButtons[5] = new Button(150, 450, 64, 64,"All Custom Items");
+  edditorItemButtons[0] = new Button(50, 230, 64, 64,"Item Spawn Add");
+  edditorItemButtons[1] = new Button(150, 230, 64, 64,"Item Spawn Remove");
+  
+  edditorItemButtons[2] = new Button(34, 314, 48, 48,"Rand Item Only");
+  edditorItemButtons[3] = new Button(168, 314, 48, 48,"Custom Item Only");
+  edditorItemButtons[4] = new Button(34, 380, 48, 48,"All Items");
+  edditorItemButtons[5] = new Button(100, 314, 48, 48,"All Custom Items");
 
   //texture buttons//
-  edditorUiButtons[0] = new ImageButton(50, 350, 64, 64, textures[1]);
-  edditorUiButtons[1] = new ImageButton(150, 350, 64, 64, textures[2]);
+  edditorUiButtons[0] = new ImageButton(50, 310, 64, 64, textures[1]);
+  edditorUiButtons[1] = new ImageButton(150, 310, 64, 64, textures[2]);
 
   //brush types//
-  edditorBrushes[0] = new Button(50, 250, 64, 64, "Single");
-  edditorBrushes[1] = new Button(150, 250, 64, 64, "Area");
+  edditorBrushes[0] = new Button(50, 230, 64, 64, "Single");
+  edditorBrushes[1] = new Button(150, 230, 64, 64, "Area");
 
   //save load buttons//
   Buttons[0] = new Button(width - 50, 150, 64, 64, "save");
@@ -157,7 +159,7 @@ function setup() {
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
-  
+  testButtonArea  = new ButtonArea(0, 425, 200, height-425);
 
   //fill the saveLoad array//
   saveLoad = []
@@ -192,12 +194,14 @@ function draw() {
     resumeButton.draw()
   }
 
+  testButtonArea.draw()
+
   //show fps//
   push()
   textSize(30)
+  rect(5,10,45,40)
   fill(0,200,0)
   text(fpsCounter, 10, 40)
-  fill(200,0,0)
   pop()
 
   //update fps counters every second//
@@ -335,6 +339,7 @@ function drawGame() {
 function drawEditor() {
   if (edditorMenu === "map") {
     MainMap.draw();
+    editorUi();
     mapEditorUi();
 
     if (brush != null) {
@@ -342,9 +347,9 @@ function drawEditor() {
     }
   }
   else if (edditorMenu === "items") {
+    editorUi();
     itemEditorUi();
   }
-  editorUi();
 }
 
 function startGame(){

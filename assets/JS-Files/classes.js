@@ -202,6 +202,7 @@ class InventoryItem {
 }
 
 //items//
+//add more item types to spawn point//
 class itemSpawnPoint{
   constructor(x1,y1,size1,itemtype1,randonly1,custonly1,custitem1){
     this.x = x1;
@@ -412,6 +413,7 @@ class Button {
     //sets pos to center
     this.x -= (this.w / 2)
     this.y -= (this.h / 2)
+    this.textSize = h1/4
   }
 
   //draws the button//
@@ -424,7 +426,7 @@ class Button {
     rect(this.x, this.y, this.w, this.h)
 
     fill(0)
-    textSize(16)
+    textSize(this.textSize)
     text(this.name, this.x + 2, this.y + 2, this.w, this.h)
     //text(str, x, y, x2, y2)
     pop()
@@ -436,6 +438,53 @@ class Button {
     else {
       return false
     }
+  }
+}
+
+class ButtonArea{
+  constructor(x1,y1,w1,h1,array1){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.array = array1;
+    this.buttons = [];
+
+    this.topRect = {
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: 55 
+    }
+
+    this.bottomRect = {
+      x: this.x,
+      y: this.y + this.h - 55,
+      w: this.w,
+      h: 55 
+    }
+    //setup//
+
+    for(let i = 0; i < this.array.length ;i++){
+      
+    }
+
+  }
+  draw(){
+    push()
+    push()
+    fill(80,100)
+    rect(this.x, this.y, this.w, this.h)
+    pop()
+    //
+
+    //
+    rect(this.topRect.x, this.topRect.y, this.topRect.w, this.topRect.h);
+    rect(this.bottomRect.x, this.bottomRect.y, this.bottomRect.w, this.bottomRect.h);
+    pop()
+  }
+  mouseOn(){
+
   }
 }
 
