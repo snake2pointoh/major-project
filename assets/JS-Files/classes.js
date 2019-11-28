@@ -442,32 +442,40 @@ class Button {
 }
 
 class ButtonArea{
-  constructor(x1,y1,w1,h1,array1){
+  constructor(x1,y1,w1,h1,buttonsize1,array1){
     this.x = x1;
     this.y = y1;
     this.w = w1;
     this.h = h1;
     this.array = array1;
     this.buttons = [];
+    
+    this.buttonSize = buttonsize1;
+    this.rectHight = buttonsize1 + 10;
+    this.buttonsWide = Math.floor(w1/buttonsize1);
+    this.buttonGap = w1 % buttonsize1;
+
+    //scroll area//
+    this.scrollX = x1;
+    this.scrollY = y1 + this.rectHight;
+    this.scrollOffset = 0;
 
     this.topRect = {
       x: this.x,
       y: this.y,
       w: this.w,
-      h: 55 
+      h: this.rectHight
     }
 
     this.bottomRect = {
       x: this.x,
-      y: this.y + this.h - 55,
+      y: this.y + this.h - this.rectHight,
       w: this.w,
-      h: 55 
+      h: this.rectHight
     }
     //setup//
 
-    for(let i = 0; i < this.array.length ;i++){
-      
-    }
+    this.update()
 
   }
   draw(){
@@ -477,7 +485,9 @@ class ButtonArea{
     rect(this.x, this.y, this.w, this.h)
     pop()
     //
-
+    for(let i = 0; i < this.buttons.length ; i++){
+      this.buttons[i].draw()
+    }
     //
     rect(this.topRect.x, this.topRect.y, this.topRect.w, this.topRect.h);
     rect(this.bottomRect.x, this.bottomRect.y, this.bottomRect.w, this.bottomRect.h);
@@ -485,6 +495,14 @@ class ButtonArea{
   }
   mouseOn(){
 
+  }
+  update(){
+    let x = 1;
+    let y = 1;
+    for(let i = 0; i < this.array.length ; i++){
+      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap) * x, (this.scrollY + this.buttonGap) * y, this.buttonSize, this.buttonSize, swordTextures[0])
+      //todo//
+    }
   }
 }
 
