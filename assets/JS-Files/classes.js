@@ -502,6 +502,13 @@ class ButtonArea{
     for(let i = 0; i < this.array.length ; i++){
       this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap) * x, (this.scrollY + this.buttonGap) * y, this.buttonSize, this.buttonSize, swordTextures[0])
       //todo//
+      if(x < this.buttonsWide){
+        x++
+      }
+      else{
+        x = 1
+        y++
+      }
     }
   }
 }
