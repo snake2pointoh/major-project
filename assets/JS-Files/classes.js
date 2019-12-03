@@ -453,11 +453,11 @@ class ButtonArea{
     this.buttonSize = buttonsize1;
     this.rectHight = buttonsize1 + 10;
     this.buttonsWide = Math.floor(w1/buttonsize1);
-    this.buttonGap = w1 % buttonsize1;
+    this.buttonGap = (w1 % buttonsize1) / this.buttonsWide;
 
     //scroll area//
-    this.scrollX = x1;
-    this.scrollY = y1 + this.rectHight;
+    this.scrollX = x1 + buttonsize1/2;
+    this.scrollY = y1 + buttonsize1/2 + this.rectHight;
     this.scrollOffset = 0;
 
     this.topRect = {
@@ -497,12 +497,13 @@ class ButtonArea{
 
   }
   update(){
-    let x = 1;
+    //this.buttons = [];
+    let x = 0;
     let y = 1;
     for(let i = 0; i < this.array.length ; i++){
-      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap) * x, (this.scrollY + this.buttonGap) * y, this.buttonSize, this.buttonSize, swordTextures[0])
+      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) * y, this.buttonSize, this.buttonSize, swordTextures[0])
       //todo//
-      if(x < this.buttonsWide){
+      if(x < this.buttonsWide -1){
         x++
       }
       else{
