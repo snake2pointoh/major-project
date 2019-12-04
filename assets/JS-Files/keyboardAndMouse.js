@@ -178,7 +178,9 @@ function mouseClicked() {
         if(itemCreatorType === "potion"){
           worldItems[3].push(itemCreator(itemCreatorType));
         }
+        customItemList.update();
       }
+      console.log(customItemList.mouseOn())
     }
 
     //save load//UPDATE FOR 2D ARRAY

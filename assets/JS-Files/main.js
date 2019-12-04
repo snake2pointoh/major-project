@@ -73,7 +73,7 @@ let itemEdditorPotionIconButtons = [];
 
 let itemCreatorType = "sword";
 
-let testButtonArea;
+let customItemList;
 
 //TODO//
 /*
@@ -159,7 +159,7 @@ function setup() {
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
-  testButtonArea  = new ButtonArea(0, 425, 200, height-425, 55, worldItems[0]);
+  customItemList = new ButtonArea(0, 425, 200, height-425, 55, worldItems[0]);
 
   //fill the saveLoad array//
   saveLoad = []
@@ -193,8 +193,6 @@ function draw() {
     backButton.draw()
     resumeButton.draw()
   }
-
-  testButtonArea.draw()
 
   //show fps//
   push()

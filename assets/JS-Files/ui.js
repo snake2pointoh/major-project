@@ -16,6 +16,8 @@ function itemEditorUi() {
     }
   }
   itemEdditorDemoIcon.draw()
+  
+  customItemList.draw()
 }
 
 function mapEditorUi(){
@@ -36,6 +38,7 @@ function mapEditorUi(){
     for(let i = 0; i < edditorItemButtons.length; i++){
       edditorItemButtons[i].draw()
     }
+    customItemList.draw()
   }
 }
 

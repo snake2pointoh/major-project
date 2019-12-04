@@ -443,6 +443,7 @@ class Button {
 
 class ButtonArea{
   constructor(x1,y1,w1,h1,buttonsize1,array1){
+    //add scrolling//
     this.x = x1;
     this.y = y1;
     this.w = w1;
@@ -459,6 +460,8 @@ class ButtonArea{
     this.scrollX = x1 + buttonsize1/2;
     this.scrollY = y1 + buttonsize1/2 + this.rectHight;
     this.scrollOffset = 0;
+    this.maxScrollOffset = 0;
+    this.scrollSpeed = 15;
 
     this.topRect = {
       x: this.x,
@@ -484,9 +487,11 @@ class ButtonArea{
     fill(80,100)
     rect(this.x, this.y, this.w, this.h)
     pop()
-    //
+    //draw buttons only if in the scroll area rect//
     for(let i = 0; i < this.buttons.length ; i++){
-      this.buttons[i].draw()
+      if(this.buttons[i].y > this.y + 5 || this.buttons[i].y < this.h - this.rectHight){
+        this.buttons[i].draw()
+      }
     }
     //
     rect(this.topRect.x, this.topRect.y, this.topRect.w, this.topRect.h);
@@ -494,22 +499,49 @@ class ButtonArea{
     pop()
   }
   mouseOn(){
-
+    for(let i = 0; i < this.buttons.length ; i++){
+      if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y + this.rectHight && mouseY < this.y + this.h - this.rectHight)){
+        if(this.buttons[i].mouseOn()){
+          return true;
+        }
+      }
+    }
   }
   update(){
-    //this.buttons = [];
+    this.buttons = [];
+    this.scrollOffset = 0;
     let x = 0;
-    let y = 1;
+    let y = 0;
     for(let i = 0; i < this.array.length ; i++){
-      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) * y, this.buttonSize, this.buttonSize, swordTextures[0])
+      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * y), this.buttonSize, this.buttonSize, this.array[i].icon)
       //todo//
       if(x < this.buttonsWide -1){
-        x++
+        x++;
       }
       else{
-        x = 1
-        y++
+        x = 0;
+        y++;
       }
+    }
+  }
+  scroll(direction,speed){
+    if(direction === 'up'){
+      for(let i = 0; i < this.buttons.length ; i++){
+        this.buttons[i].y -= speed;
+      }
+      this.scrollOffset -= speed;
+    }
+    if(direction === 'down'){
+      for(let i = 0; i < this.buttons.length ; i++){
+        this.buttons[i].y += speed;
+      }
+      this.scrollOffset += speed;
+    }
+    if(this.scrollOffset > 0){
+      for(let i = 0; i < this.buttons.length ; i++){
+        this.buttons[i].y -= this.scrollOffset;
+      }
+      this.scrollOffset = 0;
     }
   }
 }
