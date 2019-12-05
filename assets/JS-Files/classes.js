@@ -450,6 +450,7 @@ class ButtonArea{
     this.h = h1;
     this.array = array1;
     this.buttons = [];
+    this.scrollButtons = [];
     
     this.buttonSize = buttonsize1;
     this.rectHight = buttonsize1 + 10;
@@ -478,6 +479,10 @@ class ButtonArea{
     }
     //setup//
 
+    this.scrollButtons[0] = new Button(this.x + 5 + this.buttonSize/2, this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll Up")
+    this.scrollButtons[1] = new Button((this.x + this.w) - 5 - this.buttonSize/2, this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll Down")
+    this.scrollButtons[2] = new Button((this.x + this.w/2), this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll to Top")
+
     this.update()
 
   }
@@ -489,21 +494,35 @@ class ButtonArea{
     pop()
     //draw buttons only if in the scroll area rect//
     for(let i = 0; i < this.buttons.length ; i++){
-      if(this.buttons[i].y > this.y + 5 || this.buttons[i].y < this.h - this.rectHight){
+      if(this.buttons[i].y > this.y + 5 && this.buttons[i].y < this.y + (this.h - this.rectHight)){
         this.buttons[i].draw()
       }
     }
     //
     rect(this.topRect.x, this.topRect.y, this.topRect.w, this.topRect.h);
     rect(this.bottomRect.x, this.bottomRect.y, this.bottomRect.w, this.bottomRect.h);
+    for(let i = 0; i < this.scrollButtons.length; i++){
+      this.scrollButtons[i].draw()
+    }
     pop()
   }
   mouseOn(){
-    for(let i = 0; i < this.buttons.length ; i++){
-      if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y + this.rectHight && mouseY < this.y + this.h - this.rectHight)){
+    if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y + this.rectHight && mouseY < this.y + this.h - this.rectHight)){
+      for(let i = 0; i < this.buttons.length ; i++){
         if(this.buttons[i].mouseOn()){
-          return true;
+          return this.buttons[i].item;
         }
+      }
+    }
+    else {
+      if(this.scrollButtons[0].mouseOn()){
+        this.scroll("up",this.scrollSpeed)
+      }
+      if(this.scrollButtons[1].mouseOn()){
+        this.scroll("down",this.scrollSpeed)
+      }
+      if(this.scrollButtons[2].mouseOn()){
+        this.update()
       }
     }
   }
@@ -512,25 +531,33 @@ class ButtonArea{
     this.scrollOffset = 0;
     let x = 0;
     let y = 0;
-    for(let i = 0; i < this.array.length ; i++){
-      this.buttons[i] = new ImageButton((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * y), this.buttonSize, this.buttonSize, this.array[i].icon)
-      //todo//
-      if(x < this.buttonsWide -1){
-        x++;
-      }
-      else{
-        x = 0;
-        y++;
+    let c = 0
+    for(let j = 0; j < this.array.length ; j++){
+      for(let i = 0; i < this.array[j].length ; i++){
+        this.buttons[c] = new ItemButton((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * y), this.buttonSize, this.buttonSize, this.array[j][i])
+        //todo//
+        if(x < this.buttonsWide -1){
+          x++;
+        }
+        else{
+          x = 0;
+          y++;
+        }
+        c++
       }
     }
+    this.maxScrollOffset = ((this.buttonGap + this.buttonSize) * y-1) - this.buttonGap;
   }
   scroll(direction,speed){
-    if(direction === 'up'){
-      for(let i = 0; i < this.buttons.length ; i++){
-        this.buttons[i].y -= speed;
+    if(this.scrollOffset *-1 < this.maxScrollOffset){
+      if(direction === 'up'){
+        for(let i = 0; i < this.buttons.length ; i++){
+          this.buttons[i].y -= speed;
+        }
+        this.scrollOffset -= speed;
       }
-      this.scrollOffset -= speed;
     }
+
     if(direction === 'down'){
       for(let i = 0; i < this.buttons.length ; i++){
         this.buttons[i].y += speed;
@@ -542,6 +569,44 @@ class ButtonArea{
         this.buttons[i].y -= this.scrollOffset;
       }
       this.scrollOffset = 0;
+    }
+  }
+}
+
+class ItemButton {
+  constructor(x1, y1, w1, h1, item1) {
+
+    //x and y position of the button//
+    this.x = x1
+    this.y = y1
+
+    //width and height of the button//
+    this.w = w1
+    this.h = h1
+
+    //button color//
+
+    this.item = item1
+
+    //sets pos to center
+    this.x -= (this.w / 2)
+    this.y -= (this.h / 2)
+  }
+
+  //draws the button//
+  draw() {
+    push()
+    fill(50, 20)
+    rect(this.x, this.y, this.w, this.h)
+    image(this.item.icon, this.x + 5, this.y + 5, this.w - 10, this.h - 10)
+    pop()
+  }
+  mouseOn() {
+    if ((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)) {
+      return true
+    }
+    else {
+      return false
     }
   }
 }

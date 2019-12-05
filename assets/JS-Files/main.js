@@ -138,6 +138,7 @@ function setup() {
   itemEdditorButtons[3] = new Button(150, 250, 64, 64, "New Potion");
 
   itemEdditorButtons[4] = new Button(width - 250, 150, 64, 64, "Save Item");
+  itemEdditorButtons[5] = new Button(width - 250, 250, 64, 64, "Delete Item");
 
   //item edditor text boxes//
   itemEdditorText[0] = new TextBox(225, height - 330, 200, 25, "Attack Range")
@@ -159,7 +160,7 @@ function setup() {
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
-  customItemList = new ButtonArea(0, 425, 200, height-425, 55, worldItems[0]);
+  customItemList = new ButtonArea(0, 425, 200, height-425, 55, worldItems);
 
   //fill the saveLoad array//
   saveLoad = []

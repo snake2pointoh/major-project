@@ -120,6 +120,10 @@ function mouseClicked() {
         if(edditorItemButtons[5].mouseOn()){
           customItem = null;
         }
+        if(customItemList.mouseOn() !== undefined){
+          customItem = customItemList.mouseOn()
+          console.log('item updated')
+        }
       }
 
     }
@@ -180,7 +184,18 @@ function mouseClicked() {
         }
         customItemList.update();
       }
-      console.log(customItemList.mouseOn())
+      if (itemEdditorButtons[5].mouseOn()){
+        for(let i = 0; i< worldItems.length; i++){
+          if(worldItems[i].includes(customItem)){
+            //todo//
+          }
+        }
+      }
+      
+      if(customItemList.mouseOn() !== undefined){
+        customItem = customItemList.mouseOn()
+        console.log('item updated')
+      }
     }
 
     //save load//UPDATE FOR 2D ARRAY
