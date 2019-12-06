@@ -65,9 +65,9 @@ function mouseClicked() {
 
       if(edditorMapMenu === "tiles"){
         //select what tile to paint//
-        for (let i = 0; i < edditorUiButtons.length; i++) {
-          if (edditorUiButtons[i].mouseOn() && mouseButton === LEFT) {
-            selectedTexture = edditorUiButtons[i].tile
+        if(selectedTextureList === "outside"){
+          if(outsideTextureList.mouseOn() !== undefined){
+            selectedTexture = outsideTextureList.mouseOn();
           }
         }
         //select brush bode//
@@ -187,7 +187,8 @@ function mouseClicked() {
       if (itemEdditorButtons[5].mouseOn()){
         for(let i = 0; i< worldItems.length; i++){
           if(worldItems[i].includes(customItem)){
-            //todo//
+            worldItems[i].splice(worldItems[i].indexOf(customItem),1)
+            customItemList.update();
           }
         }
       }

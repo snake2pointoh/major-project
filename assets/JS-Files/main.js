@@ -35,7 +35,6 @@ let saveLoad = [];
 
 //editor stuffs//
 let edditorUiBackground = [];
-let edditorUiButtons = [];
 let edditorBrushes = [];
 let edditorItemButtons = [];
 let Buttons = [];
@@ -43,11 +42,14 @@ let menuButtons = [];
 let edditorMenuButtons = [];
 let edditorMapMenuButtons = [];
 let brushMode = "Single";
-let edditorMenu = "map"
-let edditorMapMenu = "tiles"
+let edditorMenu = "map";
+let edditorMapMenu = "tiles";
 let brush = null;
 
 let selectedTexture;
+let selectedTextureList = "outside";
+
+let outsideTextureList;
 
 //load uploaded file//
 var jsonF;
@@ -118,10 +120,6 @@ function setup() {
   edditorItemButtons[4] = new Button(34, 380, 48, 48,"All Items");
   edditorItemButtons[5] = new Button(100, 314, 48, 48,"All Custom Items");
 
-  //texture buttons//
-  edditorUiButtons[0] = new ImageButton(50, 310, 64, 64, textures[1]);
-  edditorUiButtons[1] = new ImageButton(150, 310, 64, 64, textures[2]);
-
   //brush types//
   edditorBrushes[0] = new Button(50, 230, 64, 64, "Single");
   edditorBrushes[1] = new Button(150, 230, 64, 64, "Area");
@@ -160,7 +158,9 @@ function setup() {
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
-  customItemList = new ButtonArea(0, 425, 200, height-425, 55, worldItems);
+  customItemList = new ItemButtonList(0, 425, 200, height-425, 55, worldItems);
+
+  outsideTextureList = new TextureButtonList(0, 425, 200, height-425, 55, outsideTextures)
 
   //fill the saveLoad array//
   saveLoad = []

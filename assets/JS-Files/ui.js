@@ -26,9 +26,10 @@ function mapEditorUi(){
   }
 
   if(edditorMapMenu === "tiles"){
-    for(let i = 0; i < edditorUiButtons.length; i++){
-      edditorUiButtons[i].draw()
+    if(selectedTextureList === "outside"){
+      outsideTextureList.draw()
     }
+
     for(let i = 0; i < edditorBrushes.length; i++){
       edditorBrushes[i].draw()
     }
