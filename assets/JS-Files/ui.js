@@ -10,11 +10,20 @@ function itemEditorUi() {
   for (let i = 0; i < itemEdditorText.length; i++) {
     itemEdditorText[i].draw()
   }
+
   if (itemCreatorType === "sword") {
-    for (let i = 0; i < itemEdditorSwordIconButtons.length; i++) {
-      itemEdditorSwordIconButtons[i].draw()
-    }
+    itemEdditorSwordIconButtons.draw()
   }
+  if (itemCreatorType === "bow") {
+    itemEdditorBowIconButtons.draw()
+  }
+  if (itemCreatorType === "staff") {
+    itemEdditorStaffIconButtons.draw()
+  }
+  if (itemCreatorType === "potion") {
+    itemEdditorPotionIconButtons.draw()
+  }
+
   itemEdditorDemoIcon.draw()
   
   customItemList.draw()

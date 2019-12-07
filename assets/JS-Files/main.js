@@ -68,12 +68,13 @@ let itemEdditorTextBoxes = [];
 let itemEdditorText = [];
 let itemEdditorDemoIcon;
 
-let itemEdditorSwordIconButtons = [];
-let itemEdditorBowIconButtons = [];
-let itemEdditorStaffIconButtons = [];
-let itemEdditorPotionIconButtons = [];
+let itemEdditorSwordIconButtons;
+let itemEdditorBowIconButtons;
+let itemEdditorStaffIconButtons;
+let itemEdditorPotionIconButtons;
 
 let itemCreatorType = "sword";
+let itemSpawnerType = "sword"
 
 let customItemList;
 
@@ -153,8 +154,10 @@ function setup() {
   edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map");
   edditorMenuButtons[1] = new Button(200, 50, 64, 64, "items");
 
-  itemEdditorSwordIconButtons[0] = new ImageButton(250, 150, 64, 64, swordTextures[0]);
-  itemEdditorSwordIconButtons[1] = new ImageButton(250, 250, 64, 64, swordTextures[1]);
+  itemEdditorSwordIconButtons = new TextureButtonList(200, 100, 200, 325, 55, swordTextures);
+  itemEdditorBowIconButtons = new TextureButtonList(200, 100, 200, 325, 55, bowTextures);
+  itemEdditorStaffIconButtons = new TextureButtonList(200, 100, 200, 325, 55, staffTextures);
+  itemEdditorPotionIconButtons = new TextureButtonList(200, 100, 200, 325, 55, potionTextures);
 
   itemEdditorDemoIcon = new ImageBox(width / 2 - 100, height / 2 - 100, 200, 200, swordTextures[0]);
 
@@ -232,7 +235,7 @@ function mapEdditor(mapGrid) {
           }
           if (brushMode === "ItemSpawnAdd") {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
-              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, "sword", randomOnlyItems, customOnlyItems, customItem)
+              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, itemSpawnerType, randomOnlyItems, customOnlyItems, customItem)
             }
           }
           if (brushMode === "ItemSpawnRemove") {
@@ -246,10 +249,20 @@ function mapEdditor(mapGrid) {
   }
 }
 
+//Balance values after combat is implamented//
 function randomItemGen(itemType){
   let item;
   if(itemType === "sword"){
     item = new SwordItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "sword", swordTextures[Math.round(random(0, swordTextures.length-1))])
+  }
+  if(itemType === "bow"){
+    item = new BowItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "bow", bowTextures[Math.round(random(0, bowTextures.length-1))])
+  }
+  if(itemType === "staff"){
+    item = new StaffItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "staff", staffTextures[Math.round(random(0, staffTextures.length-1))])
+  }
+  if(itemType === "potion"){
+    item = new PotionItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "potion", potionTextures[Math.round(random(0, potionTextures.length-1))])
   }
   return item;
 }

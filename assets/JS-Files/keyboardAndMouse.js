@@ -67,7 +67,7 @@ function mouseClicked() {
         //select what tile to paint//
         if(selectedTextureList === "outside"){
           if(outsideTextureList.mouseOn() !== undefined){
-            selectedTexture = outsideTextureList.mouseOn();
+            selectedTexture = outsideTextureList.mouseOn().tile;
           }
         }
         //select brush bode//
@@ -131,18 +131,32 @@ function mouseClicked() {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         itemEdditorTextBoxes[i].mouseOn()
       }
+      
       if (itemCreatorType === "sword") {
-        for (let i = 0; i < itemEdditorSwordIconButtons.length; i++) {
-          if (itemEdditorSwordIconButtons[i].mouseOn()) {
-            itemEdditorDemoIcon.image = itemEdditorSwordIconButtons[i].image
-          }
+        if (itemEdditorSwordIconButtons.mouseOn()) {
+          itemEdditorDemoIcon.image = itemEdditorSwordIconButtons.mouseOn().image
+        }
+      }
+      if (itemCreatorType === "bow") {
+        if (itemEdditorBowIconButtons.mouseOn()) {
+          itemEdditorDemoIcon.image = itemEdditorBowIconButtons.mouseOn().image
+        }
+      }
+      if (itemCreatorType === "staff") {
+        if (itemEdditorStaffIconButtons.mouseOn()) {
+          itemEdditorDemoIcon.image = itemEdditorStaffIconButtons.mouseOn().image
+        }
+      }
+      if (itemCreatorType === "potion") {
+        if (itemEdditorPotionIconButtons.mouseOn()) {
+          itemEdditorDemoIcon.image = itemEdditorPotionIconButtons.mouseOn().image
         }
       }
 
       if (itemEdditorButtons[0].mouseOn()) { //new bow button//
         itemCreatorType = "sword";
 
-        itemEdditorDemoIcon.image = itemEdditorSwordIconButtons[0].image
+        itemEdditorDemoIcon.image = itemEdditorSwordIconButtons.buttons[0].image
 
         itemEdditorText[0].textData = "Attack Range"
         itemEdditorText[1].textData = "Attack Speed"
@@ -151,6 +165,8 @@ function mouseClicked() {
       if (itemEdditorButtons[1].mouseOn()) { //new bow button//
         itemCreatorType = "bow";
 
+        itemEdditorDemoIcon.image = itemEdditorBowIconButtons.buttons[0].image
+
         itemEdditorText[0].textData = "Range"
         itemEdditorText[1].textData = "Draw Speed"
         itemEdditorText[2].textData = "Damage"
@@ -158,12 +174,16 @@ function mouseClicked() {
       if (itemEdditorButtons[2].mouseOn()) { //new staff button//
         itemCreatorType = "staff";
 
+        itemEdditorDemoIcon.image = itemEdditorStaffIconButtons.buttons[0].image
+
         itemEdditorText[0].textData = "Cast Range"
         itemEdditorText[1].textData = "Cast Speed"
         itemEdditorText[2].textData = "Damage"
       }
       if (itemEdditorButtons[3].mouseOn()) { //new Potion button//
         itemCreatorType = "potion";
+
+        itemEdditorDemoIcon.image = itemEdditorPotionIconButtons.buttons[0].image
 
         itemEdditorText[0].textData = "Duration"
         itemEdditorText[1].textData = "Affect"

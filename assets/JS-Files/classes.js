@@ -256,25 +256,37 @@ class itemSpawnPoint{
   }
   spawnItem(){
     let item
+    let itemNum = 0;
     if(this.itemType === "sword"){
-      if(this.custOnly === true && worldItems[0].length > 0 ){
-        if(this.custItem === null){
-          item = worldItems[0][Math.round(random(0, worldItems[0].length - 1))]
-        }
-        else item = this.custItem
+      itemNum = 0
+    }
+    if(this.itemType === "bow"){
+      itemNum = 1
+    }
+    if(this.itemType === "staff"){
+      itemNum = 2
+    }
+    if(this.itemType === "potion"){
+      itemNum = 3
+    }
+    
+    if(this.custOnly === true && worldItems[itemNum].length > 0 ){
+      if(this.custItem === null){
+        item = worldItems[0][Math.round(random(0, worldItems[itemNum].length - 1))]
       }
-      else{
-        if(worldItems[0].length > 0 && this.randOnly === false){
-          if(random(0,100) < 31){
-            item = worldItems[0][Math.round(random(0, worldItems[0].length - 1))]
-          }
-          else{
-            item = randomItemGen(this.itemType)
-          }
+      else item = this.custItem
+    }
+    else{
+      if(worldItems[0].length > 0 && this.randOnly === false){
+        if(random(0,100) < 31){
+          item = worldItems[0][Math.round(random(0, worldItems[itemNum].length - 1))]
         }
         else{
           item = randomItemGen(this.itemType)
         }
+      }
+      else{
+        item = randomItemGen(this.itemType)
       }
     }
     this.pickUp = new ItemPickup(this.x, this.y, this.w ,item)
@@ -680,7 +692,7 @@ class TextureButtonList{
     if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y + this.rectHight && mouseY < this.y + this.h - this.rectHight)){
       for(let i = 0; i < this.buttons.length ; i++){
         if(this.buttons[i].mouseOn()){
-          return this.buttons[i].tile;
+          return this.buttons[i];
         }
       }
     }
