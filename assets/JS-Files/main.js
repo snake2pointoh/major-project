@@ -235,7 +235,7 @@ function mapEdditor(mapGrid) {
           }
           if (brushMode === "ItemSpawnAdd") {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
-              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, itemSpawnerType, randomOnlyItems, customOnlyItems, customItem)
+              mapGrid[y][x].itemSpawner = new itemSpawnPoint(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, randomOnlyItems, customOnlyItems, customItem)
             }
           }
           if (brushMode === "ItemSpawnRemove") {

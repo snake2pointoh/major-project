@@ -204,7 +204,7 @@ class InventoryItem {
 //items//
 //add more item types to spawn point//
 class itemSpawnPoint{
-  constructor(x1,y1,size1,itemtype1,randonly1,custonly1,custitem1){
+  constructor(x1,y1,size1,randonly1,custonly1,custitem1,itemtype1,){
     this.x = x1;
     this.y = y1;
     this.w = size1;
@@ -231,6 +231,13 @@ class itemSpawnPoint{
     else{
       this.custItem = custitem1;
     }
+    if(itemtype1 === undefined){
+      this.allTypes = true;
+    }
+    else{
+      this.itemType = itemtype1;
+      this.allTypes = false;
+    }
 
     
 
@@ -255,6 +262,22 @@ class itemSpawnPoint{
     }
   }
   spawnItem(){
+    if(this.allTypes){
+      let num = Math.round(random(0, 3))
+        if(num === 0){
+          this.itemType = "sword"
+        }
+        if(num === 1){
+          this.itemType = "bow"
+        }
+        if(num === 2){
+          this.itemType = "staff"
+        }
+        if(num === 3){
+          this.itemType = "potion"
+        }
+    }
+
     let item
     let itemNum = 0;
     if(this.itemType === "sword"){
