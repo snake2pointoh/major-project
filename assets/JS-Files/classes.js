@@ -264,18 +264,18 @@ class itemSpawnPoint{
   spawnItem(){
     if(this.allTypes){
       let num = Math.round(random(0, 3))
-        if(num === 0){
-          this.itemType = "sword"
-        }
-        if(num === 1){
-          this.itemType = "bow"
-        }
-        if(num === 2){
-          this.itemType = "staff"
-        }
-        if(num === 3){
-          this.itemType = "potion"
-        }
+      if(num === 0){
+        this.itemType = "sword"
+      }
+      if(num === 1){
+        this.itemType = "bow"
+      }
+      if(num === 2){
+        this.itemType = "staff"
+      }
+      if(num === 3){
+        this.itemType = "potion"
+      }
     }
 
     let item
