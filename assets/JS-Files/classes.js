@@ -40,6 +40,13 @@ class PlayerCharacter {
     this.topH = this.h / 3
 
     //inventory//
+    this.pickupBox = {
+      x: this.x - this.w / 2 - this.w / 3,
+      y: this.y - this.h / 2 - this.h / 3,
+      w: this.w + (this.w/3)*2,
+      h: this.h + (this.h/3)*2
+    }
+
     this.Inv = new Inventory(60, 110, 4, 5, 80);
     this.Hotbar = new Hotbar(20, 9, 60);
   }
@@ -50,16 +57,20 @@ class PlayerCharacter {
 
     push()
     rectMode(CORNER)
-    rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
-    fill("red")
-
+    
     if (showDebug) {
+      push()
+      fill('green')
+      rect(this.pickupBox.x, this.pickupBox.y, this.pickupBox.w, this.pickupBox.h)
+      fill("red")
       rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
       rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
       rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
       rect(this.topX, this.topY, this.topW, this.topH) //top
+      pop()
     }
 
+    rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
     pop()
   }
 
@@ -113,6 +124,13 @@ class PlayerCharacter {
           else {
             this.bottom = false
             //console.log("is colliding bottom")
+          }
+        }
+        if(map[y][x].itemSpawner !== undefined){
+          let pickup = map[y][x].itemSpawner.pickUp
+          //fix//
+          if(!(this.pickupBox.x > pickup.x + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.x || this.pickupBox.y > pickup.y + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.y)){
+            console.log('on item')
           }
         }
       }
