@@ -52,6 +52,10 @@ class PlayerCharacter {
   }
 
   draw() {
+    //meleHitbox//do
+    angle = atan2()
+
+    //
     this.Inv.draw()
     this.Hotbar.draw()
 
@@ -127,10 +131,13 @@ class PlayerCharacter {
           }
         }
         if(map[y][x].itemSpawner !== undefined){
-          let pickup = map[y][x].itemSpawner.pickUp
-          //fix//
-          if(!(this.pickupBox.x > pickup.x + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.x || this.pickupBox.y > pickup.y + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.y)){
-            console.log('on item')
+          let pickup = map[y][x].itemSpawner.pickUp;
+          if(pickup !== undefined){
+            //fix//
+            if(!(this.pickupBox.x > pickup.xPos + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.xPos || this.pickupBox.y > pickup.yPos + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.yPos)){
+              let item = pickup.item
+              map[y][x].itemSpawner.pickUp = undefined
+            }
           }
         }
       }
