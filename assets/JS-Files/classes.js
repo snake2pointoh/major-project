@@ -48,29 +48,34 @@ class PlayerCharacter {
     }
 
     this.Inv = new Inventory(60, 110, 4, 5, 80);
-    this.Hotbar = new Hotbar(20, 9, 60);
   }
 
   draw() {
-    //meleHitbox//do
-    angle = atan2()
-
+    //meleHitbox//
+    let rad = 50;
+    let angle = atan2(mouseY - height/2, mouseX - width/2)
+    let x = cos(angle) * 50 + width/2
+    let y = sin(angle) * 50 + height/2
     //
     this.Inv.draw()
-    this.Hotbar.draw()
 
     push()
     rectMode(CORNER)
     
     if (showDebug) {
       push()
+      //item pickup hitbox//
       fill('green')
       rect(this.pickupBox.x, this.pickupBox.y, this.pickupBox.w, this.pickupBox.h)
-      fill("red")
+      //collision hitbox//
+      fill('red')
       rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
       rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
       rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
       rect(this.topX, this.topY, this.topW, this.topH) //top
+      //mele hit detection hitbox//
+      fill('yellow')
+      circle(x,y,rad)
       pop()
     }
 
@@ -130,20 +135,35 @@ class PlayerCharacter {
             //console.log("is colliding bottom")
           }
         }
+        // if(map[y][x].itemSpawner !== undefined){
+        //   let pickup = map[y][x].itemSpawner.pickUp;
+        //   if(pickup !== undefined){
+        //     //fix//
+        //     if(!(this.pickupBox.x > pickup.xPos + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.xPos || this.pickupBox.y > pickup.yPos + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.yPos)){
+        //       let item = pickup.item
+        //       this.Inv.addItem(item, map[y][x].itemSpawner)
+        //     }
+        //   }
+        // }
+      }
+    }
+  }
+  pickUpItem(){
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
         if(map[y][x].itemSpawner !== undefined){
           let pickup = map[y][x].itemSpawner.pickUp;
           if(pickup !== undefined){
             //fix//
             if(!(this.pickupBox.x > pickup.xPos + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.xPos || this.pickupBox.y > pickup.yPos + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.yPos)){
               let item = pickup.item
-              map[y][x].itemSpawner.pickUp = undefined
+              this.Inv.addItem(item, map[y][x].itemSpawner)
             }
           }
         }
       }
     }
   }
-
 }
 
 class Hotbar {
@@ -152,8 +172,6 @@ class Hotbar {
 
     this.tileCount = tileCount1;
     this.tileSize = tileSize1;
-
-    this.invOpen = false;
 
     this.grid = [];
 
@@ -182,6 +200,7 @@ class Inventory {
     this.tileSize = tileSize1;
 
     this.grid = [];
+    this.items = [];
 
     for (let y = 0; y < this.ySize; y++) {
       this.grid.push([])
@@ -189,6 +208,8 @@ class Inventory {
         this.grid[y][x] = new InventoryTile(this.x + this.tileSize * x, this.y + this.tileSize * y, this.tileSize, this.tileSize, false)
       }
     }
+
+    this.Hotbar = new Hotbar(20, 9, 60);
   }
   draw() {
     //draw inventory
@@ -199,8 +220,19 @@ class Inventory {
         }
       }
     }
-    //draw hotbar
-
+    this.Hotbar.draw()
+  }
+  addItem(item,itemSpawn){
+    for (let y = 0; y < this.grid.length; y++) {
+      for (let x = 0; x < this.grid[y].length; x++) {
+        let gridItem = this.grid[y][x];
+        if(gridItem.item === undefined){
+          gridItem.item = new InventoryItem(gridItem.x+5, gridItem.y+5, gridItem.w-10, item);
+          itemSpawn.pickUp = undefined;
+          return;
+        } 
+      }
+    }
   }
 }
 
@@ -211,18 +243,33 @@ class InventoryTile {
     this.w = w1
     this.h = h1
     this.isHotbar = isHotbar1
+    this.item = undefined;
   }
   draw() {
     push()
     fill(100)
     rect(this.x, this.y, this.w, this.h)
     pop()
+    if(this.item !== undefined){
+      this.item.draw()
+    }
   }
 }
 
 class InventoryItem {
-  constructor() {
+  constructor(x1,y1,size1,item1) {
+    this.x = x1;
+    this.y = y1;
 
+    this.size = size1;
+    this.item = item1;
+  }
+  draw(){
+    push()
+    fill(130);
+    rect(this.x, this.y, this.size, this.size)
+    image(this.item.icon,this.x+5, this.y+5, this.size-10, this.size-10)
+    pop()
   }
 }
 

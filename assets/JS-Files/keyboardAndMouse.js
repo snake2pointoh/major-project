@@ -38,7 +38,7 @@ function keyPressed() {
   if (scene === "game") {
     if (key === "e" && !paused) {
       Player.Inv.invOpen = !Player.Inv.invOpen;
-      Player.Hotbar.invOpen = Player.Inv.invOpen;
+      
       canMove = !Player.Inv.invOpen;
     }
   }

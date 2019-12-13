@@ -381,7 +381,6 @@ function resetVals() {
   Player.top = true;
   Player.bottom = true;
   Player.Inv.invOpen = false;
-  Player.Hotbar.invOpen = false;
 
   mapOffsetX = 0;
   mapOffsetY = 0;
