@@ -41,6 +41,9 @@ function keyPressed() {
       
       canMove = !Player.Inv.invOpen;
     }
+    if(key === 'f'){
+      Player.pickUpItem(MainMap.grid)
+    }
   }
 }
 
@@ -251,6 +254,12 @@ function mouseClicked() {
       edditorMenu = "items"
       mapOffsetX = 0;
       mapOffsetY = 0;
+    }
+  }
+
+  if(scene === "game"){
+    if(Player.Inv.invOpen){
+      Player.Inv.mouseOn()
     }
   }
 

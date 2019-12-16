@@ -135,20 +135,10 @@ class PlayerCharacter {
             //console.log("is colliding bottom")
           }
         }
-        // if(map[y][x].itemSpawner !== undefined){
-        //   let pickup = map[y][x].itemSpawner.pickUp;
-        //   if(pickup !== undefined){
-        //     //fix//
-        //     if(!(this.pickupBox.x > pickup.xPos + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.xPos || this.pickupBox.y > pickup.yPos + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.yPos)){
-        //       let item = pickup.item
-        //       this.Inv.addItem(item, map[y][x].itemSpawner)
-        //     }
-        //   }
-        // }
       }
     }
   }
-  pickUpItem(){
+  pickUpItem(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
         if(map[y][x].itemSpawner !== undefined){
@@ -202,6 +192,8 @@ class Inventory {
     this.grid = [];
     this.items = [];
 
+    this.selectedTile;
+
     for (let y = 0; y < this.ySize; y++) {
       this.grid.push([])
       for (let x = 0; x < this.xSize; x++) {
@@ -234,6 +226,47 @@ class Inventory {
       }
     }
   }
+  mouseOn(){
+    //fix hotbar and add selection outline//
+    if(this.invOpen){
+      for (let y = 0; y < this.grid.length; y++) {
+        for (let x = 0; x < this.grid[y].length; x++) {
+          if(this.selectedTile === undefined){
+            if(this.grid[y][x].mouseOn()){
+              this.selectedTile = this.grid[y][x];
+            }
+            else{
+              for(let i = 0; i < this.Hotbar.grid.length; i++){
+                if(this.Hotbar.grid[i].mouseOn()){
+                  this.selectedTile = this.Hotbar.grid[i];
+                }
+              }
+            }
+          }
+          else {
+            if(this.grid[y][x].mouseOn()){
+              this.swap(this.selectedTile,this.grid[y][x]);
+            }
+            else{
+              for(let i = 0; i < this.Hotbar.grid.length; i++){
+                if(this.Hotbar.grid[i].mouseOn()){
+                  this.swap(this.selectedTile,this.Hotbar.grid[i]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  swap(item1,item2){
+    let p = item1.item
+    item1.item = item2.item;
+    item2.item = p;
+    item1.updateItemPos()
+    item2.updateItemPos()
+    this.selectedTile = undefined;
+  }
 }
 
 class InventoryTile {
@@ -252,6 +285,21 @@ class InventoryTile {
     pop()
     if(this.item !== undefined){
       this.item.draw()
+    }
+  }
+  mouseOn() {
+    if ((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  updateItemPos(){
+    if(this.item !== undefined){
+      this.item.x = this.x+5;
+      this.item.y = this.y+5;
+      this.item.size = this.w-10;
     }
   }
 }
