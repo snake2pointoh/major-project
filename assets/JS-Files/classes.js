@@ -229,16 +229,19 @@ class Inventory {
   mouseOn(){
     //fix hotbar and add selection outline//
     if(this.invOpen){
+
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[y].length; x++) {
           if(this.selectedTile === undefined){
             if(this.grid[y][x].mouseOn()){
               this.selectedTile = this.grid[y][x];
+              this.selectedTile.selected = true;
             }
             else{
               for(let i = 0; i < this.Hotbar.grid.length; i++){
                 if(this.Hotbar.grid[i].mouseOn()){
                   this.selectedTile = this.Hotbar.grid[i];
+                  this.selectedTile.selected = true;
                 }
               }
             }
@@ -247,13 +250,22 @@ class Inventory {
             if(this.grid[y][x].mouseOn()){
               this.swap(this.selectedTile,this.grid[y][x]);
             }
-            else{
-              for(let i = 0; i < this.Hotbar.grid.length; i++){
-                if(this.Hotbar.grid[i].mouseOn()){
-                  this.swap(this.selectedTile,this.Hotbar.grid[i]);
-                }
-              }
-            }
+          }
+        }
+      }
+
+      for(let i = 0; i < this.Hotbar.grid.length; i++){
+        if(this.selectedTile === undefined){
+          if(this.Hotbar.grid[i].mouseOn()){
+            //why no do??//
+            console.log('thing')
+            this.selectedTile = this.Hotbar.grid[i];
+            this.selectedTile.selected = true;
+          }
+        }
+        else{
+          if(this.Hotbar.grid[i].mouseOn()){
+            this.swap(this.selectedTile,this.Hotbar.grid[i]);
           }
         }
       }
@@ -265,6 +277,7 @@ class Inventory {
     item2.item = p;
     item1.updateItemPos()
     item2.updateItemPos()
+    item1.selected = false;
     this.selectedTile = undefined;
   }
 }
@@ -277,10 +290,16 @@ class InventoryTile {
     this.h = h1
     this.isHotbar = isHotbar1
     this.item = undefined;
+    this.selected = false;
   }
   draw() {
     push()
-    fill(100)
+    if(this.selected){
+      fill(200);
+    }
+    else{
+      fill(100)
+    }
     rect(this.x, this.y, this.w, this.h)
     pop()
     if(this.item !== undefined){
