@@ -11,12 +11,12 @@ function doPhys() {
 
 function gamePhys() {
     playerController(Player)
-    Player.collisionDetect(MainMap.grid)
+    Player.collisionDetect(mapList[currentMap].grid)
 }
 
 function edditorPhys() {
     if (edditorMenu === "map") {
         playerController(Player);
-        mapEdditor(MainMap.grid);
+        mapEdditor(mapList[currentMap].grid);
     }
 }

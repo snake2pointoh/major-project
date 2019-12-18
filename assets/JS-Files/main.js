@@ -77,6 +77,9 @@ let itemCreatorType = "sword";
 let itemSpawnerType = "sword"
 
 let customItemList;
+//maps//
+let mapList = [];
+let currentMap = 0;
 
 //TODO//
 /*
@@ -102,7 +105,7 @@ function setup() {
   Player = new PlayerCharacter(width / 2, height / 2, 5);
 
   //make map//
-  MainMap = new GridGen(400, 400, 64, textures[0])
+  mapList[0] = new GridGen(400, 400, 64, textures[1])
 
   //edditor items & buttons//
   edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 80, 100);
@@ -167,9 +170,9 @@ function setup() {
 
   //fill the saveLoad array//
   saveLoad = []
-  for (let y = 0; y < MainMap.grid.length; y++) {
-    for (let x = 0; x < MainMap.grid[y].length; x++) {
-      MainMap.grid[y][x].save(saveLoad)
+  for (let y = 0; y < mapList[0].grid.length; y++) {
+    for (let x = 0; x < mapList[0].grid[y].length; x++) {
+      mapList[0].grid[y][x].save(saveLoad)
     }
   }
   console.log("saved");
@@ -292,9 +295,9 @@ function loadMap(data) {
   console.log(data.saveData);
   saveLoad = data.saveData;
   let i = 0;
-  for (let y = 0; y < MainMap.grid.length; y++) {
-    for (let x = 0; x < MainMap.grid[y].length; x++) {
-      MainMap.grid[y][x].load(saveLoad[i])
+  for (let y = 0; y < mapList[0].grid.length; y++) {
+    for (let x = 0; x < mapList[0].grid[y].length; x++) {
+      mapList[0].grid[y][x].load(saveLoad[i])
       i++
     }
   }
@@ -323,10 +326,6 @@ function playerController(player) {
   }
 }
 
-function inventoryController() {
-  //do
-}
-
 //load custom map save//
 function calledFromHTML() {
   jsonF = document.getElementById("Json-file").files[0];
@@ -341,7 +340,7 @@ function drawMenu() {
 }
 
 function drawGame() {
-  MainMap.draw()
+  mapList[currentMap].draw()
   // for(let i = 0; i < itemSpawners.length;i++){
   //   itemSpawners[i].draw()
   // }
@@ -350,7 +349,7 @@ function drawGame() {
 
 function drawEditor() {
   if (edditorMenu === "map") {
-    MainMap.draw();
+    mapList[currentMap].draw()
     editorUi();
     mapEditorUi();
 
@@ -366,10 +365,10 @@ function drawEditor() {
 
 function startGame(){
   playing = true;
-  for (let y = 0; y < MainMap.grid.length; y++) {
-    for (let x = 0; x < MainMap.grid[y].length; x++) {
-      if(MainMap.grid[y][x].itemSpawner !== undefined){
-        MainMap.grid[y][x].itemSpawner.spawnItem()
+  for (let y = 0; y < mapList[0].grid.length; y++) {
+    for (let x = 0; x < mapList[0].grid[y].length; x++) {
+      if(mapList[0].grid[y][x].itemSpawner !== undefined){
+        mapList[0].grid[y][x].itemSpawner.spawnItem()
       }
     }
   }
@@ -381,6 +380,10 @@ function resetVals() {
   Player.top = true;
   Player.bottom = true;
   Player.Inv.invOpen = false;
+  if(Player.Inv.selectedTile !== undefined){
+    Player.Inv.selectedTile.selected = false;
+    Player.Inv.selectedTile = undefined;
+  }
 
   mapOffsetX = 0;
   mapOffsetY = 0;

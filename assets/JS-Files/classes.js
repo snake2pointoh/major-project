@@ -226,8 +226,8 @@ class Inventory {
       }
     }
   }
+  
   mouseOn(){
-    //fix hotbar and add selection outline//
     if(this.invOpen){
 
       for (let y = 0; y < this.grid.length; y++) {
@@ -236,14 +236,6 @@ class Inventory {
             if(this.grid[y][x].mouseOn()){
               this.selectedTile = this.grid[y][x];
               this.selectedTile.selected = true;
-            }
-            else{
-              for(let i = 0; i < this.Hotbar.grid.length; i++){
-                if(this.Hotbar.grid[i].mouseOn()){
-                  this.selectedTile = this.Hotbar.grid[i];
-                  this.selectedTile.selected = true;
-                }
-              }
             }
           }
           else {
@@ -257,8 +249,6 @@ class Inventory {
       for(let i = 0; i < this.Hotbar.grid.length; i++){
         if(this.selectedTile === undefined){
           if(this.Hotbar.grid[i].mouseOn()){
-            //why no do??//
-            console.log('thing')
             this.selectedTile = this.Hotbar.grid[i];
             this.selectedTile.selected = true;
           }
@@ -271,6 +261,7 @@ class Inventory {
       }
     }
   }
+
   swap(item1,item2){
     let p = item1.item
     item1.item = item2.item;

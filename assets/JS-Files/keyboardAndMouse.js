@@ -38,11 +38,15 @@ function keyPressed() {
   if (scene === "game") {
     if (key === "e" && !paused) {
       Player.Inv.invOpen = !Player.Inv.invOpen;
+      if(Player.Inv.selectedTile !== undefined){
+        Player.Inv.selectedTile.selected = false;
+        Player.Inv.selectedTile = undefined;
+      }
       
       canMove = !Player.Inv.invOpen;
     }
     if(key === 'f'){
-      Player.pickUpItem(MainMap.grid)
+      Player.pickUpItem(mapList[currentMap].grid)
     }
   }
 }
@@ -91,7 +95,7 @@ function mouseClicked() {
             }
             else {
               brush.updateSize(mouseX, mouseY)
-              brush.changeTiles(MainMap.grid);
+              brush.changeTiles(mapList[currentMap].grid);
               brush = null;
               canMove = true;
             }
@@ -225,9 +229,9 @@ function mouseClicked() {
     //save load//UPDATE FOR 2D ARRAY
     if (Buttons[0].mouseOn()) { //save//
       saveLoad = []
-      for (let y = 0; y < MainMap.grid.length; y++) {
-        for (let x = 0; x < MainMap.grid[y].length; x++) {
-          MainMap.grid[y][x].save(saveLoad)
+      for (let y = 0; y < mapList[0].grid.length; y++) {
+        for (let x = 0; x < mapList[0].grid[y].length; x++) {
+          mapList[0].grid[y][x].save(saveLoad)
         }
       }
       console.log("saved");
