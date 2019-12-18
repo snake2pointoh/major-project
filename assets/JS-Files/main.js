@@ -80,6 +80,8 @@ let customItemList;
 //maps//
 let mapList = [];
 let currentMap = 0;
+let mapSelectionButtons = [];
+let mapSelectorList;
 
 //TODO//
 /*
@@ -167,6 +169,12 @@ function setup() {
   customItemList = new ItemButtonList(0, 425, 200, height-425, 55, worldItems);
 
   outsideTextureList = new TextureButtonList(0, 425, 200, height-425, 55, outsideTextures)
+
+  //map selection//do
+  mapSelectionButtons[0] = new Button(34, 314, 48, 48,"Rand Item Only");
+  mapSelectionButtons[1] = new Button(168, 314, 48, 48,"Custom Item Only");
+  mapSelectionButtons[2] = new Button(34, 380, 48, 48,"All Items");
+  mapSelectionButtons[3] = new Button(100, 314, 48, 48,"All Custom Items");
 
   //fill the saveLoad array//
   saveLoad = []
