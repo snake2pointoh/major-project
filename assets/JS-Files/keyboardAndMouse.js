@@ -72,11 +72,26 @@ function mouseClicked() {
 
       if(edditorMapMenu === "tiles"){
         //select what tile to paint//
+        if(mapSelectionButtons[0].mouseOn()){
+          selectedTextureList = "maps";
+        }
+
+        if(mapSelectionButtons[1].mouseOn()){
+          selectedTextureList = "outside";
+        }
+
         if(selectedTextureList === "outside"){
           if(outsideTextureList.mouseOn() !== undefined){
             selectedTexture = outsideTextureList.mouseOn().tile;
           }
         }
+
+        if(selectedTextureList === "maps"){
+          if(mapSelectorList.mouseOn() !== undefined){
+            currentMap = mapSelectorList.mouseOn();
+          }
+        }
+
         //select brush bode//
         for (let i = 0; i < edditorBrushes.length; i++) {
           if (edditorBrushes[i].mouseOn()) {
@@ -254,7 +269,13 @@ function mouseClicked() {
     if (edditorMenuButtons[0].mouseOn()) { //tiles
       edditorMenu = "map"
     }
-    if (edditorMenuButtons[1].mouseOn()) { //items
+    if (edditorMenuButtons[1].mouseOn()) { //new Map
+      edditorMenu = "newMap"
+      mapOffsetX = 0;
+      mapOffsetY = 0;
+    }
+
+    if (edditorMenuButtons[2].mouseOn()) { //items
       edditorMenu = "items"
       mapOffsetX = 0;
       mapOffsetY = 0;

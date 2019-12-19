@@ -156,8 +156,9 @@ function setup() {
 
   itemEdditorTextBoxes[3] = new TextInputBox(width / 2 - 150, 150, 300, 50, 20);
 
-  edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map");
-  edditorMenuButtons[1] = new Button(200, 50, 64, 64, "items");
+  edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map editor");
+  edditorMenuButtons[1] = new Button(200, 50, 64, 64, "add map");
+  edditorMenuButtons[2] = new Button(300, 50, 64, 64, "items");
 
   itemEdditorSwordIconButtons = new TextureButtonList(200, 100, 200, 325, 55, swordTextures);
   itemEdditorBowIconButtons = new TextureButtonList(200, 100, 200, 325, 55, bowTextures);
@@ -170,11 +171,13 @@ function setup() {
 
   outsideTextureList = new TextureButtonList(0, 425, 200, height-425, 55, outsideTextures)
 
-  //map selection//do
-  mapSelectionButtons[0] = new Button(34, 314, 48, 48,"Rand Item Only");
-  mapSelectionButtons[1] = new Button(168, 314, 48, 48,"Custom Item Only");
-  mapSelectionButtons[2] = new Button(34, 380, 48, 48,"All Items");
-  mapSelectionButtons[3] = new Button(100, 314, 48, 48,"All Custom Items");
+  mapSelectorList = new ButtonList(0, 425, 200, height-425, 55, mapList)
+
+  //map selection//
+  mapSelectionButtons[0] = new Button(34, 314, 48, 48,"Map List");
+  mapSelectionButtons[1] = new Button(100, 314, 48, 48,"World Tileset");
+  mapSelectionButtons[2] = new Button(168, 314, 48, 48,"Building Outside Tileset");
+  mapSelectionButtons[3] = new Button(34, 380, 48, 48,"Building Inside Tileset");
 
   //fill the saveLoad array//
   saveLoad = []
@@ -349,9 +352,6 @@ function drawMenu() {
 
 function drawGame() {
   mapList[currentMap].draw()
-  // for(let i = 0; i < itemSpawners.length;i++){
-  //   itemSpawners[i].draw()
-  // }
   Player.draw()
 }
 
@@ -365,9 +365,13 @@ function drawEditor() {
       brush.draw();
     }
   }
-  else if (edditorMenu === "items") {
+  if (edditorMenu === "items") {
     editorUi();
     itemEditorUi();
+  }
+  if (edditorMenu === "newMap") {
+    editorUi();
+    newMapEditorUi();
   }
 }
 

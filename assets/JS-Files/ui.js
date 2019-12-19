@@ -38,6 +38,14 @@ function mapEditorUi(){
     if(selectedTextureList === "outside"){
       outsideTextureList.draw()
     }
+    if(selectedTextureList === "maps"){
+      mapSelectorList.draw()
+    }
+
+
+    for(let i = 0; i < mapSelectionButtons.length; i++){
+      mapSelectionButtons[i].draw()
+    }
 
     for(let i = 0; i < edditorBrushes.length; i++){
       edditorBrushes[i].draw()
@@ -68,4 +76,8 @@ function editorUi() {
   for (let i = 0; i < Buttons.length; i++) {
     Buttons[i].draw()
   }
+}
+
+function newMapEditorUi(){
+
 }
