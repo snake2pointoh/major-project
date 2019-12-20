@@ -19,4 +19,7 @@ function edditorPhys() {
         playerController(Player);
         mapEdditor(mapList[currentMap].grid);
     }
+    if (edditorMenu === "newMap") {
+        playerController(Player);
+    }
 }

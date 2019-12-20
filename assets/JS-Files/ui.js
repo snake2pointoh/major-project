@@ -79,5 +79,15 @@ function editorUi() {
 }
 
 function newMapEditorUi(){
-
+  for (let i = 0; i < newMapEditorText.length; i++) {
+    newMapEditorText[i].draw()
+  }
+  for (let i = 0; i < newMapEditorTextbox.length; i++) {
+    newMapEditorTextbox[i].draw()
+  }
+  for (let i = 0; i < newMapEditorButtons.length; i++) {
+    newMapEditorButtons[i].draw()
+  }
+  
+  mapSelectorList.draw()
 }

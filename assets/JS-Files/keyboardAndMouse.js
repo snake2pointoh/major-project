@@ -9,6 +9,13 @@ function keyTyped() {
         }
       }
     }
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        if (newMapEditorTextbox[i].focused) {
+          newMapEditorTextbox[i].updateText(key)
+        }
+      }
+    }
   }
 }
 
@@ -30,6 +37,19 @@ function keyPressed() {
           }
           if (keyCode === ENTER) {
             itemEdditorTextBoxes[i].setMax();
+          }
+        }
+      }
+    }
+
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        if (newMapEditorTextbox[i].focused) {
+          if (keyCode === BACKSPACE) {
+            newMapEditorTextbox[i].textBackspace()
+          }
+          if (keyCode === ENTER) {
+            newMapEditorTextbox[i].setMax();
           }
         }
       }
@@ -237,10 +257,29 @@ function mouseClicked() {
       
       if(customItemList.mouseOn() !== undefined){
         customItem = customItemList.mouseOn()
-        console.log('item updated')
       }
     }
 
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        newMapEditorTextbox[i].mouseOn()
+      }
+      if(newMapEditorButtons[0].mouseOn()){
+        mapList.push(new GridGen(newMapEditorTextbox[0].returnAsNum(), newMapEditorTextbox[1].returnAsNum(), 64, textures[1]))
+        mapSelectorList.update()
+      }
+      if(newMapEditorButtons[1].mouseOn()){
+        if(mapList.length > 1){
+          mapList.splice(currentMap, 1)
+          currentMap = 0;
+          mapSelectorList.update()
+        }
+      }
+
+      if(mapSelectorList.mouseOn() !== undefined){
+        currentMap = mapSelectorList.mouseOn();
+      }
+    }
     //save load//UPDATE FOR 2D ARRAY
     if (Buttons[0].mouseOn()) { //save//
       saveLoad = []
@@ -268,7 +307,10 @@ function mouseClicked() {
     //select edditor mode//
     if (edditorMenuButtons[0].mouseOn()) { //tiles
       edditorMenu = "map"
+      mapOffsetX = 0;
+      mapOffsetY = 0;
     }
+
     if (edditorMenuButtons[1].mouseOn()) { //new Map
       edditorMenu = "newMap"
       mapOffsetX = 0;

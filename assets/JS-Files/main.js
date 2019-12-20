@@ -13,7 +13,7 @@ https://www.youtube.com/c/BizmasterStudios
 
 let scene = "menu"
 
-const backgroundColour = 255;
+const backgroundColour = 0;
 
 let fpsCounter = 0;
 let lastFPSMillis = 0;
@@ -82,6 +82,10 @@ let mapList = [];
 let currentMap = 0;
 let mapSelectionButtons = [];
 let mapSelectorList;
+
+let newMapEditorText = [];
+let newMapEditorTextbox = [];
+let newMapEditorButtons = [];
 
 //TODO//
 /*
@@ -178,6 +182,16 @@ function setup() {
   mapSelectionButtons[1] = new Button(100, 314, 48, 48,"World Tileset");
   mapSelectionButtons[2] = new Button(168, 314, 48, 48,"Building Outside Tileset");
   mapSelectionButtons[3] = new Button(34, 380, 48, 48,"Building Inside Tileset");
+
+  //new map edditor//
+  newMapEditorText[0] = new TextBox(20, 200, 160, 25, "X Size")
+  newMapEditorTextbox[0] = new TextInputBox(20, 230, 160, 50, 4, true, 400);
+
+  newMapEditorText[1] = new TextBox(20, 300, 160, 25, "Y Size")
+  newMapEditorTextbox[1] = new TextInputBox(20, 330, 160, 50, 4, true, 400);
+
+  newMapEditorButtons[0] = new Button(50, 150, 64, 64, "Create Map")
+  newMapEditorButtons[1] = new Button(150, 150, 64, 64, "Delete Map")
 
   //fill the saveLoad array//
   saveLoad = []
@@ -370,6 +384,7 @@ function drawEditor() {
     itemEditorUi();
   }
   if (edditorMenu === "newMap") {
+    mapList[currentMap].draw()
     editorUi();
     newMapEditorUi();
   }
@@ -377,10 +392,12 @@ function drawEditor() {
 
 function startGame(){
   playing = true;
-  for (let y = 0; y < mapList[0].grid.length; y++) {
-    for (let x = 0; x < mapList[0].grid[y].length; x++) {
-      if(mapList[0].grid[y][x].itemSpawner !== undefined){
-        mapList[0].grid[y][x].itemSpawner.spawnItem()
+  for(let i = 0; i < mapList.length; i++){
+    for (let y = 0; y < mapList[i].grid.length; y++) {
+      for (let x = 0; x < mapList[i].grid[y].length; x++) {
+        if(mapList[i].grid[y][x].itemSpawner !== undefined){
+          mapList[i].grid[y][x].itemSpawner.spawnItem()
+        }
       }
     }
   }
