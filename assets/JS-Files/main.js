@@ -13,7 +13,7 @@ https://www.youtube.com/c/BizmasterStudios
 
 let scene = "menu"
 
-const backgroundColour = 0;
+let backgroundColour = 255;
 
 let fpsCounter = 0;
 let lastFPSMillis = 0;
@@ -392,6 +392,7 @@ function drawEditor() {
 
 function startGame(){
   playing = true;
+  backgroundColour = 0;
   for(let i = 0; i < mapList.length; i++){
     for (let y = 0; y < mapList[i].grid.length; y++) {
       for (let x = 0; x < mapList[i].grid[y].length; x++) {
@@ -424,4 +425,5 @@ function resetVals() {
 
   paused = false;
   playing = false;
+  backgroundColour = 255;
 }
