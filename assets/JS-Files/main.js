@@ -87,6 +87,10 @@ let newMapEditorText = [];
 let newMapEditorTextbox = [];
 let newMapEditorButtons = [];
 
+let doorWorldId;
+let doorOutId;
+let doorId;
+let doorEditorText = [];
 //TODO//
 /*
 complete item edditor
@@ -175,6 +179,20 @@ function setup() {
 
   outsideTextureList = new TextureButtonList(0, 425, 200, height-425, 55, outsideTextures)
 
+  doorTextureList = new TextureButtonList(0, 550, 200, height-550, 55, doorTextures)
+  
+  doorEditorText[0] = new TextBox(20, 480, 70, 25, "Door ID")
+  doorId = new TextInputBox(20, 510, 70, 40, 4, true);
+  
+  doorEditorText[1] = new TextBox(20, 410, 70, 25, "Map Out")
+  doorWorldId = new TextInputBox(20, 440, 70, 40, 4, true);
+  
+  doorEditorText[2] = new TextBox(110, 410, 70, 25, "Door Out")
+  doorOutId = new TextInputBox(110, 440, 70, 40, 4, true);
+
+  doorEditorText[3] = new TextBox(110, 480, 70, 25, "Door Direc")
+  doorOutDirection = new TextInputBox(110, 510, 70, 40, 4, true, 4, 1);
+
   mapSelectorList = new ButtonList(0, 425, 200, height-425, 55, mapList)
 
   //map selection//
@@ -182,6 +200,7 @@ function setup() {
   mapSelectionButtons[1] = new Button(100, 314, 48, 48,"World Tileset");
   mapSelectionButtons[2] = new Button(168, 314, 48, 48,"Building Outside Tileset");
   mapSelectionButtons[3] = new Button(34, 380, 48, 48,"Building Inside Tileset");
+  mapSelectionButtons[4] = new Button(100, 380, 48, 48,"Doors");
 
   //new map edditor//
   newMapEditorText[0] = new TextBox(20, 200, 160, 25, "X Size")
@@ -259,6 +278,20 @@ function mapEdditor(mapGrid) {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
               mapGrid[y][x].tile = selectedTexture
               mapGrid[y][x].hasCollision = selectedTexture.hasCollision
+              if(selectedTextureList === "doors"){
+                mapGrid[y][x].isDoor = true;
+                mapGrid[y][x].doorId = doorId.returnAsNum();
+                mapGrid[y][x].DoorOut = doorOutId.returnAsNum();
+                mapGrid[y][x].MapOut = doorWorldId.returnAsNum();
+                mapGrid[y][x].doorDirection = doorOutDirection.returnAsNum();
+              }
+              else {
+                mapGrid[y][x].isDoor = false;
+                mapGrid[y][x].doorId = 0;
+                mapGrid[y][x].DoorOut = 0;
+                mapGrid[y][x].MapOut = 0;
+                mapGrid[y][x].doorDirection = 1;
+              }
             }
           }
           if (brushMode === "ItemSpawnAdd") {

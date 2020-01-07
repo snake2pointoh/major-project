@@ -2,6 +2,24 @@
 
 function keyTyped() {
   if (scene === "editor") {
+    if(edditorMenu === "map"){
+      if (doorWorldId.focused) {
+        doorWorldId.updateText(key)
+      }
+
+      if (doorOutId.focused) {
+        doorOutId.updateText(key)
+      }
+
+      if (doorId.focused) {
+        doorId.updateText(key)
+      }
+      
+      if (doorOutDirection.focused) {
+        doorOutDirection.updateText(key)
+      }
+    }
+    
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
@@ -29,6 +47,47 @@ function keyPressed() {
   }
 
   if (scene === "editor") {
+    if(edditorMenu === "map"){
+      if(selectedTextureList === "doors"){
+        
+        if (doorWorldId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorWorldId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorWorldId.setMax();
+          }
+        }
+        
+        if (doorOutId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorOutId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorOutId.setMax();
+          }
+        }
+        
+        if (doorId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorId.setMax();
+          }
+        }
+
+        if (doorOutDirection.focused) {
+          if (keyCode === BACKSPACE) {
+            doorOutDirection.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorOutDirection.setMax();
+          }
+        }
+      }
+    }
+
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
@@ -100,10 +159,24 @@ function mouseClicked() {
           selectedTextureList = "outside";
         }
 
+        if(mapSelectionButtons[4].mouseOn()){
+          selectedTextureList = "doors";
+        }
+
         if(selectedTextureList === "outside"){
           if(outsideTextureList.mouseOn() !== undefined){
             selectedTexture = outsideTextureList.mouseOn().tile;
           }
+        }
+
+        if(selectedTextureList === "doors"){
+          if(doorTextureList.mouseOn() !== undefined){
+            selectedTexture = doorTextureList.mouseOn().tile;
+          }
+          doorWorldId.mouseOn()
+          doorOutId.mouseOn()
+          doorId.mouseOn()
+          doorOutDirection.mouseOn()
         }
 
         if(selectedTextureList === "maps"){

@@ -41,6 +41,16 @@ function mapEditorUi(){
     if(selectedTextureList === "maps"){
       mapSelectorList.draw()
     }
+    if(selectedTextureList === "doors"){
+      doorTextureList.draw()
+      doorWorldId.draw()
+      doorOutId.draw()
+      doorId.draw()
+      doorOutDirection.draw()
+      for(let i = 0; i < doorEditorText.length; i++){
+        doorEditorText[i].draw()
+      }
+    }
 
 
     for(let i = 0; i < mapSelectionButtons.length; i++){

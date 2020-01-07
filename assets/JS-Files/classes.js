@@ -1107,7 +1107,7 @@ class UiBackground {
 }
 
 class TextInputBox {
-  constructor(x1, y1, w1, h1, charLim1, numonly1, maxNum1) {
+  constructor(x1, y1, w1, h1, charLim1, numonly1, maxNum1, defNum1) {
     this.x = x1;
     this.y = y1;
     this.w = w1;
@@ -1118,6 +1118,10 @@ class TextInputBox {
     this.numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     this.charLimit = charLim1;
 
+    if (defNum1 === undefined) {
+      this.defNum = 0;
+    } else this.defNum = defNum1;
+    
     if (maxNum1 === undefined) {
       this.maxNum = 0;
     } else this.maxNum = maxNum1;
@@ -1127,7 +1131,7 @@ class TextInputBox {
     } else this.numOnly = numonly1;
 
     if (this.numOnly) {
-      this.textData = "0";
+      this.textData = String(this.defNum);
     } else this.textData = "text";
   }
   draw() {
@@ -1200,7 +1204,7 @@ class TextBox {
     push()
     rectMode(CORNER);
     textAlign(CENTER, CENTER);
-    textSize(20);
+    textSize(this.h/2);
     rect(this.x, this.y, this.w, this.h);
     text(this.textData, this.x, this.y, this.w, this.h);
     pop()
@@ -1244,6 +1248,15 @@ class GridItem {
     this.Ypos = this.y + this.offsetY
 
     this.itemSpawner;
+
+    this.isDoor = false;
+
+    this.doorId = 0;
+    this.DoorOut = 0;
+    this.MapOut = 0;
+    this.doorDirection = 1;
+
+    this.doorData = "";
   }
 
 
@@ -1252,12 +1265,18 @@ class GridItem {
     this.Ypos = this.y + this.offsetY
     //draw GridItem if its on screen//Many FPS!!!//
     if (((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)) {
+      this.doorData = "door Id " + this.doorId + " Door Out " + this.DoorOut + " Map Out " + this.MapOut + " Door Direc " + this.doorDirection;
       push()
       image(this.tile.texture, this.Xpos, this.Ypos, this.w, this.h)
-      pop()
       if(this.itemSpawner !== undefined){
         this.itemSpawner.draw()
       }
+      if(!playing && this.isDoor){
+        textAlign(CENTER, CENTER)
+        textSize(this.h/6)
+        text(this.doorData, this.x, this.y, this.w, this.h)
+      }
+      pop()
     }
   }
 
