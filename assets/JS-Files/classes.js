@@ -46,6 +46,12 @@ class PlayerCharacter {
       w: this.w + (this.w/3)*2,
       h: this.h + (this.h/3)*2
     }
+    this.doorHitbox = {
+      x: this.x - this.w/2,
+      y: this.y - this.h/2,
+      w: this.w,
+      h: this.h
+    }
 
     this.Inv = new Inventory(60, 110, 4, 5, 80);
   }
@@ -60,7 +66,7 @@ class PlayerCharacter {
     this.Inv.draw()
 
     push()
-    rectMode(CORNER)
+    //rectMode(CORNER)
     
     if (showDebug) {
       push()
@@ -133,6 +139,13 @@ class PlayerCharacter {
           else {
             this.bottom = false
             //console.log("is colliding bottom")
+          }
+        }
+        if(map[y][x].isDoor){
+          if(this.doorHitbox.x > map[y][x].Xpos + map[y][x].w || this.doorHitbox.x + this.doorHitbox.w < map[y][x].Xpos || this.doorHitbox.y > map[y][x].Ypos + map[y][x].h || this.doorHitbox.y + this.doorHitbox.h < map[y][x].Ypos){
+          }
+          else{
+            map[y][x].doDoorStuff();
           }
         }
       }
@@ -1274,7 +1287,7 @@ class GridItem {
       if(!playing && this.isDoor){
         textAlign(CENTER, CENTER)
         textSize(this.h/6)
-        text(this.doorData, this.x, this.y, this.w, this.h)
+        text(this.doorData, this.x + this.offsetX, this.y + this.offsetY, this.w, this.h)
       }
       pop()
     }
@@ -1298,6 +1311,33 @@ class GridItem {
     this.tile = textures[data]
     this.hasCollision = textures[data].hasCollision
   }
+  doDoorStuff(){
+    let xPos = (this.x - width/2 + 32)
+    let yPos = (this.y - height/2 + 32)
+    let map = mapList[this.MapOut]
+    for(let y = 0; y < map.grid.length; y++){
+      for(let x = 0; x < map.grid[y].length; x++){
+        if(map.grid[y][x].isDoor && map.grid[y][x].doorId === this.DoorOut){
+          xPos = (map.grid[y][x].x - width/2 + 32);
+          yPos = (map.grid[y][x].y - height/2 + 32);
+          if(map.grid[y][x].doorDirection === 1){
+            yPos -= 64
+          }
+          if(map.grid[y][x].doorDirection === 2){
+            xPos += 64
+          }
+          if(map.grid[y][x].doorDirection === 3){
+            yPos += 64
+          }
+          if(map.grid[y][x].doorDirection === 4){
+            xPos -= 64
+          }
+          currentMap = this.MapOut;
+          teleport(xPos/64,yPos/64)
+        }
+      }
+    }
+  }
 }
 
 class GridGen {
@@ -1314,7 +1354,7 @@ class GridGen {
     for (let y = 0; y < this.SizeY; y++) {
       this.grid.push([]);
       for (let x = 0; x < this.SizeX; x++) {
-        this.grid[y][x] = new GridItem(x * this.gridSize, y * this.gridSize, this.gridSize, this.gridSize, this.defaultTexture)
+        this.grid[y][x] = new GridItem(x * this.gridSize + (width/2 - this.gridSize/2), y * this.gridSize + (height/2 - this.gridSize/2), this.gridSize, this.gridSize, this.defaultTexture)
       }
     }
   }

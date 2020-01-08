@@ -20,6 +20,7 @@ let lastFPSMillis = 0;
 
 let mapOffsetX = 0;
 let mapOffsetY = 0;
+let playerPos = [[],[]];
 let showDebug = false;
 let canMove = true;
 
@@ -226,7 +227,8 @@ function setup() {
 
 function draw() {
   background(backgroundColour);
-
+  playerPos = [[mapOffsetX/64 *-1],[mapOffsetY/64 *-1]]
+  //console.log(mapOffsetX/64 *-1 + " " + mapOffsetY/64 *-1);
   if (scene === "menu") {
     drawMenu()
   }
@@ -426,6 +428,7 @@ function drawEditor() {
 function startGame(){
   playing = true;
   backgroundColour = 0;
+  currentMap = 0;
   for(let i = 0; i < mapList.length; i++){
     for (let y = 0; y < mapList[i].grid.length; y++) {
       for (let x = 0; x < mapList[i].grid[y].length; x++) {
@@ -459,4 +462,9 @@ function resetVals() {
   paused = false;
   playing = false;
   backgroundColour = 255;
+}
+
+function teleport(xVal,yVal){
+  mapOffsetX = xVal*64 *-1
+  mapOffsetY = yVal*64 *-1
 }
