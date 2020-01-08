@@ -46,6 +46,12 @@ class PlayerCharacter {
       w: this.w + (this.w/3)*2,
       h: this.h + (this.h/3)*2
     }
+    this.doorHitbox = {
+      x: this.x - this.w/2,
+      y: this.y - this.h/2,
+      w: this.w,
+      h: this.h
+    }
 
     this.Inv = new Inventory(60, 110, 4, 5, 80);
   }
@@ -60,7 +66,7 @@ class PlayerCharacter {
     this.Inv.draw()
 
     push()
-    rectMode(CORNER)
+    //rectMode(CORNER)
     
     if (showDebug) {
       push()
@@ -133,6 +139,13 @@ class PlayerCharacter {
           else {
             this.bottom = false
             //console.log("is colliding bottom")
+          }
+        }
+        if(map[y][x].isDoor){
+          if(this.doorHitbox.x > map[y][x].Xpos + map[y][x].w || this.doorHitbox.x + this.doorHitbox.w < map[y][x].Xpos || this.doorHitbox.y > map[y][x].Ypos + map[y][x].h || this.doorHitbox.y + this.doorHitbox.h < map[y][x].Ypos){
+          }
+          else{
+            map[y][x].doDoorStuff();
           }
         }
       }
@@ -950,6 +963,136 @@ class ImageButton {
   }
 }
 
+class ButtonList{
+  constructor(x1,y1,w1,h1,buttonsize1,array1){
+    //add scrolling//
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.array = array1;
+    this.buttons = [];
+    this.scrollButtons = [];
+    
+    this.buttonSize = buttonsize1;
+    this.rectHight = buttonsize1 + 10;
+    this.buttonsWide = Math.floor(w1/buttonsize1);
+    this.buttonGap = (w1 % buttonsize1) / this.buttonsWide;
+
+    //scroll area//
+    this.scrollX = x1 + buttonsize1/2;
+    this.scrollY = y1 + buttonsize1/2 + this.rectHight;
+    this.scrollOffset = 0;
+    this.maxScrollOffset = 0;
+    this.scrollSpeed = 15;
+
+    this.topRect = {
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.rectHight
+    }
+
+    this.bottomRect = {
+      x: this.x,
+      y: this.y + this.h - this.rectHight,
+      w: this.w,
+      h: this.rectHight
+    }
+    //setup//
+
+    this.scrollButtons[0] = new Button(this.x + 5 + this.buttonSize/2, this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll Up")
+    this.scrollButtons[1] = new Button((this.x + this.w) - 5 - this.buttonSize/2, this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll Down")
+    this.scrollButtons[2] = new Button((this.x + this.w/2), this.y + 5 + this.buttonSize/2, this.buttonSize, this.buttonSize, "Scroll to Top")
+
+    this.update()
+
+  }
+  draw(){
+    push()
+    push()
+    fill(80,100)
+    rect(this.x, this.y, this.w, this.h)
+    pop()
+    //draw buttons only if in the scroll area rect//
+    for(let i = 0; i < this.buttons.length ; i++){
+      if(this.buttons[i].y > this.y + 5 && this.buttons[i].y < this.y + (this.h - this.rectHight)){
+        this.buttons[i].draw()
+      }
+    }
+    //
+    rect(this.topRect.x, this.topRect.y, this.topRect.w, this.topRect.h);
+    rect(this.bottomRect.x, this.bottomRect.y, this.bottomRect.w, this.bottomRect.h);
+    for(let i = 0; i < this.scrollButtons.length; i++){
+      this.scrollButtons[i].draw()
+    }
+    pop()
+  }
+  mouseOn(){
+    if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y + this.rectHight && mouseY < this.y + this.h - this.rectHight)){
+      for(let i = 0; i < this.buttons.length ; i++){
+        if(this.buttons[i].mouseOn()){
+          return i;
+        }
+      }
+    }
+    else {
+      if(this.scrollButtons[0].mouseOn()){
+        this.scroll("up",this.scrollSpeed)
+      }
+      if(this.scrollButtons[1].mouseOn()){
+        this.scroll("down",this.scrollSpeed)
+      }
+      if(this.scrollButtons[2].mouseOn()){
+        this.update()
+      }
+    }
+  }
+  update(){
+    this.buttons = [];
+    this.scrollOffset = 0;
+    let x = 0;
+    let y = 0;
+    let c = 0
+    for(let j = 0; j < this.array.length ; j++){
+        this.buttons[c] = new Button((this.scrollX + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * x), (this.scrollY + this.buttonGap/2) + ((this.buttonSize + this.buttonGap) * y), this.buttonSize, this.buttonSize, "map " + j)
+        //todo//
+        if(x < this.buttonsWide -1){
+          x++;
+        }
+        else{
+          x = 0;
+          y++;
+        }
+        c++
+    }
+    this.maxScrollOffset = ((this.buttonGap + this.buttonSize) * y-1) - this.buttonGap;
+  }
+  scroll(direction,speed){
+    if(this.scrollOffset *-1 < this.maxScrollOffset){
+      if(direction === 'up'){
+        for(let i = 0; i < this.buttons.length ; i++){
+          this.buttons[i].y -= speed;
+        }
+        this.scrollOffset -= speed;
+      }
+    }
+
+    if(direction === 'down'){
+      for(let i = 0; i < this.buttons.length ; i++){
+        this.buttons[i].y += speed;
+      }
+      this.scrollOffset += speed;
+    }
+    if(this.scrollOffset > 0){
+      for(let i = 0; i < this.buttons.length ; i++){
+        this.buttons[i].y -= this.scrollOffset;
+      }
+      this.scrollOffset = 0;
+    }
+  }
+}
+
 class UiBackground {
   constructor(x1, y1, w1, h1, grayVal1, a1) {
     this.x = x1
@@ -977,7 +1120,7 @@ class UiBackground {
 }
 
 class TextInputBox {
-  constructor(x1, y1, w1, h1, charLim1, numonly1, maxNum1) {
+  constructor(x1, y1, w1, h1, charLim1, numonly1, maxNum1, defNum1) {
     this.x = x1;
     this.y = y1;
     this.w = w1;
@@ -988,6 +1131,10 @@ class TextInputBox {
     this.numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     this.charLimit = charLim1;
 
+    if (defNum1 === undefined) {
+      this.defNum = 0;
+    } else this.defNum = defNum1;
+    
     if (maxNum1 === undefined) {
       this.maxNum = 0;
     } else this.maxNum = maxNum1;
@@ -997,7 +1144,7 @@ class TextInputBox {
     } else this.numOnly = numonly1;
 
     if (this.numOnly) {
-      this.textData = "0";
+      this.textData = String(this.defNum);
     } else this.textData = "text";
   }
   draw() {
@@ -1070,7 +1217,7 @@ class TextBox {
     push()
     rectMode(CORNER);
     textAlign(CENTER, CENTER);
-    textSize(20);
+    textSize(this.h/2);
     rect(this.x, this.y, this.w, this.h);
     text(this.textData, this.x, this.y, this.w, this.h);
     pop()
@@ -1114,6 +1261,15 @@ class GridItem {
     this.Ypos = this.y + this.offsetY
 
     this.itemSpawner;
+
+    this.isDoor = false;
+
+    this.doorId = 0;
+    this.DoorOut = 0;
+    this.MapOut = 0;
+    this.doorDirection = 1;
+
+    this.doorData = "";
   }
 
 
@@ -1122,12 +1278,18 @@ class GridItem {
     this.Ypos = this.y + this.offsetY
     //draw GridItem if its on screen//Many FPS!!!//
     if (((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)) {
+      this.doorData = "door Id " + this.doorId + " Door Out " + this.DoorOut + " Map Out " + this.MapOut + " Door Direc " + this.doorDirection;
       push()
       image(this.tile.texture, this.Xpos, this.Ypos, this.w, this.h)
-      pop()
       if(this.itemSpawner !== undefined){
         this.itemSpawner.draw()
       }
+      if(!playing && this.isDoor){
+        textAlign(CENTER, CENTER)
+        textSize(this.h/6)
+        text(this.doorData, this.x + this.offsetX, this.y + this.offsetY, this.w, this.h)
+      }
+      pop()
     }
   }
 
@@ -1149,6 +1311,33 @@ class GridItem {
     this.tile = textures[data]
     this.hasCollision = textures[data].hasCollision
   }
+  doDoorStuff(){
+    let xPos = (this.x - width/2 + 32)
+    let yPos = (this.y - height/2 + 32)
+    let map = mapList[this.MapOut]
+    for(let y = 0; y < map.grid.length; y++){
+      for(let x = 0; x < map.grid[y].length; x++){
+        if(map.grid[y][x].isDoor && map.grid[y][x].doorId === this.DoorOut){
+          xPos = (map.grid[y][x].x - width/2 + 32);
+          yPos = (map.grid[y][x].y - height/2 + 32);
+          if(map.grid[y][x].doorDirection === 1){
+            yPos -= 64
+          }
+          if(map.grid[y][x].doorDirection === 2){
+            xPos += 64
+          }
+          if(map.grid[y][x].doorDirection === 3){
+            yPos += 64
+          }
+          if(map.grid[y][x].doorDirection === 4){
+            xPos -= 64
+          }
+          currentMap = this.MapOut;
+          teleport(xPos/64,yPos/64)
+        }
+      }
+    }
+  }
 }
 
 class GridGen {
@@ -1165,7 +1354,7 @@ class GridGen {
     for (let y = 0; y < this.SizeY; y++) {
       this.grid.push([]);
       for (let x = 0; x < this.SizeX; x++) {
-        this.grid[y][x] = new GridItem(x * this.gridSize, y * this.gridSize, this.gridSize, this.gridSize, this.defaultTexture)
+        this.grid[y][x] = new GridItem(x * this.gridSize + (width/2 - this.gridSize/2), y * this.gridSize + (height/2 - this.gridSize/2), this.gridSize, this.gridSize, this.defaultTexture)
       }
     }
   }

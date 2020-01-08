@@ -8,6 +8,7 @@ let staffTextures = [];
 let potionTextures = [];
 //
 let outsideTextures = [];
+let doorTextures = [];
 
 function preload() {
     //textures//
@@ -18,6 +19,8 @@ function preload() {
     outsideTextures[0] = textures[1];
     outsideTextures[1] = textures[2];
 
+    //door textures//
+    doorTextures[0] = textures[0];
 
     //item textures//
     swordTextures[0] = loadImage('assets/Item_Textures/Swords/Sword1.png');

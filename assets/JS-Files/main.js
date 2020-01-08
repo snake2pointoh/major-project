@@ -13,13 +13,14 @@ https://www.youtube.com/c/BizmasterStudios
 
 let scene = "menu"
 
-const backgroundColour = 255;
+let backgroundColour = 255;
 
 let fpsCounter = 0;
 let lastFPSMillis = 0;
 
 let mapOffsetX = 0;
 let mapOffsetY = 0;
+let playerPos = [[],[]];
 let showDebug = false;
 let canMove = true;
 
@@ -80,7 +81,17 @@ let customItemList;
 //maps//
 let mapList = [];
 let currentMap = 0;
+let mapSelectionButtons = [];
+let mapSelectorList;
 
+let newMapEditorText = [];
+let newMapEditorTextbox = [];
+let newMapEditorButtons = [];
+
+let doorWorldId;
+let doorOutId;
+let doorId;
+let doorEditorText = [];
 //TODO//
 /*
 complete item edditor
@@ -154,8 +165,9 @@ function setup() {
 
   itemEdditorTextBoxes[3] = new TextInputBox(width / 2 - 150, 150, 300, 50, 20);
 
-  edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map");
-  edditorMenuButtons[1] = new Button(200, 50, 64, 64, "items");
+  edditorMenuButtons[0] = new Button(100, 50, 64, 64, "map editor");
+  edditorMenuButtons[1] = new Button(200, 50, 64, 64, "add map");
+  edditorMenuButtons[2] = new Button(300, 50, 64, 64, "items");
 
   itemEdditorSwordIconButtons = new TextureButtonList(200, 100, 200, 325, 55, swordTextures);
   itemEdditorBowIconButtons = new TextureButtonList(200, 100, 200, 325, 55, bowTextures);
@@ -167,6 +179,39 @@ function setup() {
   customItemList = new ItemButtonList(0, 425, 200, height-425, 55, worldItems);
 
   outsideTextureList = new TextureButtonList(0, 425, 200, height-425, 55, outsideTextures)
+
+  doorTextureList = new TextureButtonList(0, 550, 200, height-550, 55, doorTextures)
+  
+  doorEditorText[0] = new TextBox(20, 480, 70, 25, "Door ID")
+  doorId = new TextInputBox(20, 510, 70, 40, 4, true);
+  
+  doorEditorText[1] = new TextBox(20, 410, 70, 25, "Map Out")
+  doorWorldId = new TextInputBox(20, 440, 70, 40, 4, true);
+  
+  doorEditorText[2] = new TextBox(110, 410, 70, 25, "Door Out")
+  doorOutId = new TextInputBox(110, 440, 70, 40, 4, true);
+
+  doorEditorText[3] = new TextBox(110, 480, 70, 25, "Door Direc")
+  doorOutDirection = new TextInputBox(110, 510, 70, 40, 4, true, 4, 1);
+
+  mapSelectorList = new ButtonList(0, 425, 200, height-425, 55, mapList)
+
+  //map selection//
+  mapSelectionButtons[0] = new Button(34, 314, 48, 48,"Map List");
+  mapSelectionButtons[1] = new Button(100, 314, 48, 48,"World Tileset");
+  mapSelectionButtons[2] = new Button(168, 314, 48, 48,"Building Outside Tileset");
+  mapSelectionButtons[3] = new Button(34, 380, 48, 48,"Building Inside Tileset");
+  mapSelectionButtons[4] = new Button(100, 380, 48, 48,"Doors");
+
+  //new map edditor//
+  newMapEditorText[0] = new TextBox(20, 200, 160, 25, "X Size")
+  newMapEditorTextbox[0] = new TextInputBox(20, 230, 160, 50, 4, true, 400);
+
+  newMapEditorText[1] = new TextBox(20, 300, 160, 25, "Y Size")
+  newMapEditorTextbox[1] = new TextInputBox(20, 330, 160, 50, 4, true, 400);
+
+  newMapEditorButtons[0] = new Button(50, 150, 64, 64, "Create Map")
+  newMapEditorButtons[1] = new Button(150, 150, 64, 64, "Delete Map")
 
   //fill the saveLoad array//
   saveLoad = []
@@ -182,7 +227,8 @@ function setup() {
 
 function draw() {
   background(backgroundColour);
-
+  playerPos = [[mapOffsetX/64 *-1],[mapOffsetY/64 *-1]]
+  //console.log(mapOffsetX/64 *-1 + " " + mapOffsetY/64 *-1);
   if (scene === "menu") {
     drawMenu()
   }
@@ -234,6 +280,20 @@ function mapEdditor(mapGrid) {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
               mapGrid[y][x].tile = selectedTexture
               mapGrid[y][x].hasCollision = selectedTexture.hasCollision
+              if(selectedTextureList === "doors"){
+                mapGrid[y][x].isDoor = true;
+                mapGrid[y][x].doorId = doorId.returnAsNum();
+                mapGrid[y][x].DoorOut = doorOutId.returnAsNum();
+                mapGrid[y][x].MapOut = doorWorldId.returnAsNum();
+                mapGrid[y][x].doorDirection = doorOutDirection.returnAsNum();
+              }
+              else {
+                mapGrid[y][x].isDoor = false;
+                mapGrid[y][x].doorId = 0;
+                mapGrid[y][x].DoorOut = 0;
+                mapGrid[y][x].MapOut = 0;
+                mapGrid[y][x].doorDirection = 1;
+              }
             }
           }
           if (brushMode === "ItemSpawnAdd") {
@@ -341,9 +401,6 @@ function drawMenu() {
 
 function drawGame() {
   mapList[currentMap].draw()
-  // for(let i = 0; i < itemSpawners.length;i++){
-  //   itemSpawners[i].draw()
-  // }
   Player.draw()
 }
 
@@ -357,18 +414,27 @@ function drawEditor() {
       brush.draw();
     }
   }
-  else if (edditorMenu === "items") {
+  if (edditorMenu === "items") {
     editorUi();
     itemEditorUi();
+  }
+  if (edditorMenu === "newMap") {
+    mapList[currentMap].draw()
+    editorUi();
+    newMapEditorUi();
   }
 }
 
 function startGame(){
   playing = true;
-  for (let y = 0; y < mapList[0].grid.length; y++) {
-    for (let x = 0; x < mapList[0].grid[y].length; x++) {
-      if(mapList[0].grid[y][x].itemSpawner !== undefined){
-        mapList[0].grid[y][x].itemSpawner.spawnItem()
+  backgroundColour = 0;
+  currentMap = 0;
+  for(let i = 0; i < mapList.length; i++){
+    for (let y = 0; y < mapList[i].grid.length; y++) {
+      for (let x = 0; x < mapList[i].grid[y].length; x++) {
+        if(mapList[i].grid[y][x].itemSpawner !== undefined){
+          mapList[i].grid[y][x].itemSpawner.spawnItem()
+        }
       }
     }
   }
@@ -395,4 +461,10 @@ function resetVals() {
 
   paused = false;
   playing = false;
+  backgroundColour = 255;
+}
+
+function teleport(xVal,yVal){
+  mapOffsetX = xVal*64 *-1
+  mapOffsetY = yVal*64 *-1
 }

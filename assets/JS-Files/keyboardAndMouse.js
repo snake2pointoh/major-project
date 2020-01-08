@@ -2,10 +2,35 @@
 
 function keyTyped() {
   if (scene === "editor") {
+    if(edditorMenu === "map"){
+      if (doorWorldId.focused) {
+        doorWorldId.updateText(key)
+      }
+
+      if (doorOutId.focused) {
+        doorOutId.updateText(key)
+      }
+
+      if (doorId.focused) {
+        doorId.updateText(key)
+      }
+      
+      if (doorOutDirection.focused) {
+        doorOutDirection.updateText(key)
+      }
+    }
+    
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
           itemEdditorTextBoxes[i].updateText(key)
+        }
+      }
+    }
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        if (newMapEditorTextbox[i].focused) {
+          newMapEditorTextbox[i].updateText(key)
         }
       }
     }
@@ -22,6 +47,47 @@ function keyPressed() {
   }
 
   if (scene === "editor") {
+    if(edditorMenu === "map"){
+      if(selectedTextureList === "doors"){
+        
+        if (doorWorldId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorWorldId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorWorldId.setMax();
+          }
+        }
+        
+        if (doorOutId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorOutId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorOutId.setMax();
+          }
+        }
+        
+        if (doorId.focused) {
+          if (keyCode === BACKSPACE) {
+            doorId.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorId.setMax();
+          }
+        }
+
+        if (doorOutDirection.focused) {
+          if (keyCode === BACKSPACE) {
+            doorOutDirection.textBackspace()
+          }
+          if (keyCode === ENTER) {
+            doorOutDirection.setMax();
+          }
+        }
+      }
+    }
+
     if (edditorMenu === "items") {
       for (let i = 0; i < itemEdditorTextBoxes.length; i++) {
         if (itemEdditorTextBoxes[i].focused) {
@@ -30,6 +96,19 @@ function keyPressed() {
           }
           if (keyCode === ENTER) {
             itemEdditorTextBoxes[i].setMax();
+          }
+        }
+      }
+    }
+
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        if (newMapEditorTextbox[i].focused) {
+          if (keyCode === BACKSPACE) {
+            newMapEditorTextbox[i].textBackspace()
+          }
+          if (keyCode === ENTER) {
+            newMapEditorTextbox[i].setMax();
           }
         }
       }
@@ -72,11 +151,40 @@ function mouseClicked() {
 
       if(edditorMapMenu === "tiles"){
         //select what tile to paint//
+        if(mapSelectionButtons[0].mouseOn()){
+          selectedTextureList = "maps";
+        }
+
+        if(mapSelectionButtons[1].mouseOn()){
+          selectedTextureList = "outside";
+        }
+
+        if(mapSelectionButtons[4].mouseOn()){
+          selectedTextureList = "doors";
+        }
+
         if(selectedTextureList === "outside"){
           if(outsideTextureList.mouseOn() !== undefined){
             selectedTexture = outsideTextureList.mouseOn().tile;
           }
         }
+
+        if(selectedTextureList === "doors"){
+          if(doorTextureList.mouseOn() !== undefined){
+            selectedTexture = doorTextureList.mouseOn().tile;
+          }
+          doorWorldId.mouseOn()
+          doorOutId.mouseOn()
+          doorId.mouseOn()
+          doorOutDirection.mouseOn()
+        }
+
+        if(selectedTextureList === "maps"){
+          if(mapSelectorList.mouseOn() !== undefined){
+            currentMap = mapSelectorList.mouseOn();
+          }
+        }
+
         //select brush bode//
         for (let i = 0; i < edditorBrushes.length; i++) {
           if (edditorBrushes[i].mouseOn()) {
@@ -222,10 +330,29 @@ function mouseClicked() {
       
       if(customItemList.mouseOn() !== undefined){
         customItem = customItemList.mouseOn()
-        console.log('item updated')
       }
     }
 
+    if (edditorMenu === "newMap") {
+      for (let i = 0; i < newMapEditorTextbox.length; i++) {
+        newMapEditorTextbox[i].mouseOn()
+      }
+      if(newMapEditorButtons[0].mouseOn()){
+        mapList.push(new GridGen(newMapEditorTextbox[0].returnAsNum(), newMapEditorTextbox[1].returnAsNum(), 64, textures[1]))
+        mapSelectorList.update()
+      }
+      if(newMapEditorButtons[1].mouseOn()){
+        if(mapList.length > 1){
+          mapList.splice(currentMap, 1)
+          currentMap = 0;
+          mapSelectorList.update()
+        }
+      }
+
+      if(mapSelectorList.mouseOn() !== undefined){
+        currentMap = mapSelectorList.mouseOn();
+      }
+    }
     //save load//UPDATE FOR 2D ARRAY
     if (Buttons[0].mouseOn()) { //save//
       saveLoad = []
@@ -253,8 +380,17 @@ function mouseClicked() {
     //select edditor mode//
     if (edditorMenuButtons[0].mouseOn()) { //tiles
       edditorMenu = "map"
+      mapOffsetX = 0;
+      mapOffsetY = 0;
     }
-    if (edditorMenuButtons[1].mouseOn()) { //items
+
+    if (edditorMenuButtons[1].mouseOn()) { //new Map
+      edditorMenu = "newMap"
+      mapOffsetX = 0;
+      mapOffsetY = 0;
+    }
+
+    if (edditorMenuButtons[2].mouseOn()) { //items
       edditorMenu = "items"
       mapOffsetX = 0;
       mapOffsetY = 0;

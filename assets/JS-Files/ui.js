@@ -38,6 +38,24 @@ function mapEditorUi(){
     if(selectedTextureList === "outside"){
       outsideTextureList.draw()
     }
+    if(selectedTextureList === "maps"){
+      mapSelectorList.draw()
+    }
+    if(selectedTextureList === "doors"){
+      doorTextureList.draw()
+      doorWorldId.draw()
+      doorOutId.draw()
+      doorId.draw()
+      doorOutDirection.draw()
+      for(let i = 0; i < doorEditorText.length; i++){
+        doorEditorText[i].draw()
+      }
+    }
+
+
+    for(let i = 0; i < mapSelectionButtons.length; i++){
+      mapSelectionButtons[i].draw()
+    }
 
     for(let i = 0; i < edditorBrushes.length; i++){
       edditorBrushes[i].draw()
@@ -68,4 +86,18 @@ function editorUi() {
   for (let i = 0; i < Buttons.length; i++) {
     Buttons[i].draw()
   }
+}
+
+function newMapEditorUi(){
+  for (let i = 0; i < newMapEditorText.length; i++) {
+    newMapEditorText[i].draw()
+  }
+  for (let i = 0; i < newMapEditorTextbox.length; i++) {
+    newMapEditorTextbox[i].draw()
+  }
+  for (let i = 0; i < newMapEditorButtons.length; i++) {
+    newMapEditorButtons[i].draw()
+  }
+  
+  mapSelectorList.draw()
 }
