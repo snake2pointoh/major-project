@@ -524,6 +524,48 @@ class PotionItem {
 }
 //items//
 
+//Ai//
+class PathFind{
+  constructor(){
+
+  }
+}
+
+class AiSpawn{
+  constructor(){
+
+  }
+}
+
+class AiBase{
+  constructor(x1,y1,size1,map1){
+    this.position = {
+      x: x1,
+      y: y1
+    }
+    this.size = size1;
+    this.map = map1;
+  }
+  draw(){
+    if(this.map === currentMap){
+      push()
+      fill('red')
+      rect(this.position.x - this.size/2, this.position.y - this.size/2, this.size, this.size);
+      pop()
+    }
+  }
+
+  moveTo(tile){
+
+  }
+}
+
+class EnemyAi extends AiBase{
+  constructor(x1,y1,size1,map1){
+    super(x1,y1,size1);
+  }
+}
+//Ai//
 class areaBrush {
   constructor(x1, y1) {
     this.x = x1
