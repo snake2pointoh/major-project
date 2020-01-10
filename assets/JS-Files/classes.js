@@ -46,7 +46,7 @@ class PlayerCharacter {
       w: this.w + (this.w/3)*2,
       h: this.h + (this.h/3)*2
     }
-    this.doorHitbox = {
+    this.Hitbox = {
       x: this.x - this.w/2,
       y: this.y - this.h/2,
       w: this.w,
@@ -142,7 +142,7 @@ class PlayerCharacter {
           }
         }
         if(map[y][x].isDoor){
-          if(this.doorHitbox.x > map[y][x].Xpos + map[y][x].w || this.doorHitbox.x + this.doorHitbox.w < map[y][x].Xpos || this.doorHitbox.y > map[y][x].Ypos + map[y][x].h || this.doorHitbox.y + this.doorHitbox.h < map[y][x].Ypos){
+          if(this.Hitbox.x > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w < map[y][x].Xpos || this.Hitbox.y > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h < map[y][x].Ypos){
           }
           else{
             map[y][x].doDoorStuff();
@@ -162,6 +162,20 @@ class PlayerCharacter {
               let item = pickup.item
               this.Inv.addItem(item, map[y][x].itemSpawner)
             }
+          }
+        }
+      }
+    }
+  }
+  getCurrentTile(map){
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
+        if(this.Hitbox.x > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w < map[y][x].Xpos || this.Hitbox.y > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h < map[y][x].Ypos){
+        }
+        else{
+          return {
+            y: y,
+            x: x
           }
         }
       }
@@ -525,12 +539,6 @@ class PotionItem {
 //items//
 
 //Ai//
-class PathFind{
-  constructor(){
-
-  }
-}
-
 class AiSpawn{
   constructor(){
 
@@ -545,18 +553,43 @@ class AiBase{
     }
     this.size = size1;
     this.map = map1;
+    
+    this.Hitbox = {
+      x: this.x - this.size/2,
+      y: this.y - this.size/2,
+      w: this.size,
+      h: this.size
+    }
+
+    this.rout = [];
   }
   draw(){
     if(this.map === currentMap){
       push()
       fill('red')
-      rect(this.position.x - this.size/2, this.position.y - this.size/2, this.size, this.size);
+      rect(this.Hitbox.x, this.Hitbox.y, this.Hitbox.w, this.Hitbox.h);
       pop()
     }
   }
+  getCurrentTile(map){
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
+        if(this.Hitbox.x > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w < map[y][x].Xpos || this.Hitbox.y > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h < map[y][x].Ypos){
+        }
+        else{
+          return {
+            y: y,
+            x: x
+          }
+        }
+      }
+    }
+  }
+  move(){
 
-  moveTo(tile){
-
+  }
+  pathfind(){
+    mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
   }
 }
 
@@ -1408,5 +1441,37 @@ class GridGen {
         this.grid[y][x].draw()
       }
     }
+  }
+  pathfind(start,end){
+    //console.log(start,end)
+    let pathfindArray = [[]]
+    let path = [];
+    let atEnd = false
+    let map = mapList[currentMap].grid
+    let isNextToWall = false;
+    pathfindArray[start.y][start.x] = new PathFindTile(start.x, start.y, 0, 0, 'start')
+    while(!atEnd){
+      for(let i = 0; i < pathfindArray.length; i++) {
+        
+      }
+      isNextToWall = false;
+    }
+    return path
+  }
+}
+class PathFindTile{
+  constructor(x1,y1,g1,h1,parentArray1){      
+    this.x = x1;
+    this.y = y1;
+    this.gCost = g1;
+    this.hCost = h1;
+    this.fCost = g1 + h1;
+    if(parentArray1 === 'start'){
+      this.closed = true
+    }
+    else{
+      this.closed = false
+    }
+    this.parent = parentArray1;
   }
 }
