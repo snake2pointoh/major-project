@@ -1444,17 +1444,88 @@ class GridGen {
   }
   pathfind(start,end){
     //console.log(start,end)
-    let pathfindArray = [[]]
+    let pathfindArray = []
     let path = [];
     let atEnd = false
     let map = mapList[currentMap].grid
     let isNextToWall = false;
+    let g = 0;
+    let h = 0;
+
+    for (let y = 0; y < map.length; y++) {
+      pathfindArray.push([])
+      for (let x = 0; x < map[y].length; x++) {
+        pathfindArray.push([])
+      }
+    }
     pathfindArray[start.y][start.x] = new PathFindTile(start.x, start.y, 0, 0, 'start')
+    
     while(!atEnd){
+      let currentTile
       for(let i = 0; i < pathfindArray.length; i++) {
-        
+        for(let j = 0; j < pathfindArray[i].length; j++) {
+
+          if(pathfindArray[i][j] !== undefined){
+            if(!pathfindArray[i][j].closed){
+              if(pathfindArray[i][j].fCost < currentTile.fCost || currentTile === undefined){
+                currentTile = pathfindArray[i][j];
+              }
+            }
+          }
+        }
+      }
+
+      for (let y = -1; y <= 1; y++) {
+        for (let x = -1; x <= 1; x++) {
+          if(map[currentTile.y+y][currentTile.x+x].hasCollision){
+            isNextToWall = true;
+          }
+        }
+      }
+      if(isNextToWall){
+        for (let y = -1; y <= 1; y++) {
+          if(y===0){
+            for (let x = -1; x <= 1; x=1) {
+              if(x !== 0 && y !== 0){
+                g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
+                h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
+                
+                if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
+                  pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                }
+              }
+            }
+          }
+          else{
+            if(x !== 0 && y !== 0){
+              g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
+              h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
+              
+              if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
+                pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+              }
+            }
+          }
+        }
+      }
+      else{
+        for (let y = -1; y <= 1; y++) {
+          for (let x = -1; x <= 1; x++) {
+            if(x !== 0 && y !== 0){
+              g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
+              h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
+              
+              if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
+                pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+              }
+            }
+          }
+        }
       }
       isNextToWall = false;
+      if(pathfindArray[end.y][end.x] !== undefined){
+        atEnd = true;
+      }
     }
     return path
   }
