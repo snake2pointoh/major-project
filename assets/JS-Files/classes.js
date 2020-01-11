@@ -554,27 +554,37 @@ class AiBase{
     this.size = size1;
     this.map = map1;
     
+    this.speed = 3
+
     this.Hitbox = {
-      x: this.x - this.size/2,
-      y: this.y - this.size/2,
+      x: this.position.x - this.size/2,
+      y: this.position.y - this.size/2,
       w: this.size,
       h: this.size
     }
 
-    this.rout = [];
+    this.path;
   }
   draw(){
+    this.Hitbox.x = this.position.x - this.size/2
+    this.Hitbox.y = this.position.y - this.size/2
+    
     if(this.map === currentMap){
       push()
       fill('red')
-      rect(this.Hitbox.x, this.Hitbox.y, this.Hitbox.w, this.Hitbox.h);
+      rect(this.Hitbox.x + mapOffsetX, this.Hitbox.y + mapOffsetY, this.Hitbox.w, this.Hitbox.h);
       pop()
+      if(this.path !== undefined){
+        if(this.path.length > 0){
+          this.move(this.path[this.path.length-1])
+        }
+      }
     }
   }
   getCurrentTile(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
-        if(this.Hitbox.x > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w < map[y][x].Xpos || this.Hitbox.y > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h < map[y][x].Ypos){
+        if(this.Hitbox.x + mapOffsetX > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w + mapOffsetX < map[y][x].Xpos || this.Hitbox.y + mapOffsetY > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h + mapOffsetY < map[y][x].Ypos){
         }
         else{
           return {
@@ -585,11 +595,40 @@ class AiBase{
       }
     }
   }
-  move(){
 
+  move(goal){
+    let x = goal.x *64 + width/2;
+    let y = goal.y *64 + height/2;
+    if((this.position.x < x+8 && this.position.x > x-8) && (this.position.y < y+8 && this.position.y > y-8)){
+      this.path.pop();
+    }
+
+    else{
+      if(x > this.position.x){
+        this.position.x += this.speed
+      }
+      if(x < this.position.x){
+        this.position.x -= this.speed
+      }
+
+      if(y > this.position.y){
+        this.position.y += this.speed
+      }
+      if(y < this.position.y){
+        this.position.y -= this.speed
+      }
+    }
   }
+
   pathfind(){
-    mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
+    if(this.map === currentMap){
+      try {
+        this.path = mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
+        this.path.pop()
+      } catch (error) {
+        console.log("Pathfind Error")
+      }
+    }
   }
 }
 
@@ -1447,6 +1486,7 @@ class GridGen {
     let pathfindArray = []
     let path = [];
     let atEnd = false
+    let madePath = false;
     let map = mapList[currentMap].grid
     let isNextToWall = false;
     let g = 0;
@@ -1455,19 +1495,18 @@ class GridGen {
     for (let y = 0; y < map.length; y++) {
       pathfindArray.push([])
       for (let x = 0; x < map[y].length; x++) {
-        pathfindArray.push([])
+        pathfindArray[y].push([])
       }
     }
     pathfindArray[start.y][start.x] = new PathFindTile(start.x, start.y, 0, 0, 'start')
-    
+    let currentTile = pathfindArray[start.y][start.x]
+    let lastTile;
     while(!atEnd){
-      let currentTile
       for(let i = 0; i < pathfindArray.length; i++) {
         for(let j = 0; j < pathfindArray[i].length; j++) {
-
-          if(pathfindArray[i][j] !== undefined){
+          if(pathfindArray[i][j].length !== 0){
             if(!pathfindArray[i][j].closed){
-              if(pathfindArray[i][j].fCost < currentTile.fCost || currentTile === undefined){
+              if((currentTile.closed || pathfindArray[i][j].fCost < currentTile.fCost) || currentTile.parent === 'start'){
                 currentTile = pathfindArray[i][j];
               }
             }
@@ -1477,32 +1516,57 @@ class GridGen {
 
       for (let y = -1; y <= 1; y++) {
         for (let x = -1; x <= 1; x++) {
-          if(map[currentTile.y+y][currentTile.x+x].hasCollision){
-            isNextToWall = true;
+          if(currentTile.y + y >= 0 && currentTile.x + x >= 0){
+            if(map[currentTile.y + y][currentTile.x + x].hasCollision){
+              isNextToWall = true;
+            }
           }
         }
       }
       if(isNextToWall){
         for (let y = -1; y <= 1; y++) {
           if(y===0){
-            for (let x = -1; x <= 1; x=1) {
-              if(x !== 0 && y !== 0){
-                g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
-                h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
-                
-                if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
-                  pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+            for (let x = -1; x <= 1; x++) {
+              if(x !== 0 || y !== 0){
+                if(currentTile.y + y >= 0 && currentTile.x + x >= 0){
+                  g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 ) + currentTile.gCost;
+                  h = Math.round(Math.sqrt(Math.pow(end.x - (currentTile.x+x),2) + Math.pow(end.y - (currentTile.y+y),2))* 10 );
+                  
+                  if(pathfindArray[currentTile.y+y][currentTile.x+x].length === 0){
+                    pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                  }
+                  else{
+                    if(!pathfindArray[currentTile.y+y][currentTile.x+x].closed && pathfindArray[currentTile.y+y][currentTile.x+x].gCost > g){
+                      pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                    }
+                  }
+
+                  if(map[currentTile.y+y][currentTile.x+x].hasCollision){
+                    pathfindArray[currentTile.y+y][currentTile.x+x].closed = true;
+                  }
                 }
               }
             }
           }
           else{
-            if(x !== 0 && y !== 0){
-              g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
-              h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
-              
-              if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
-                pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+            let x = 0;
+            if(x !== 0 || y !== 0){
+              if(currentTile.y + y >= 0 && currentTile.x + x >= 0){
+                g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 ) + currentTile.gCost;
+                h = Math.round(Math.sqrt(Math.pow(end.x - (currentTile.x+x),2) + Math.pow(end.y - (currentTile.y+y),2))* 10 );
+                
+                if(pathfindArray[currentTile.y+y][currentTile.x+x].length === 0){
+                  pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                }
+                else{
+                  if(!pathfindArray[currentTile.y+y][currentTile.x+x].closed && pathfindArray[currentTile.y+y][currentTile.x+x].gCost > g){
+                    pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                  }
+                }
+
+                if(map[currentTile.y+y][currentTile.x+x].hasCollision){
+                  pathfindArray[currentTile.y+y][currentTile.x+x].closed = true;
+                }
               }
             }
           }
@@ -1511,20 +1575,46 @@ class GridGen {
       else{
         for (let y = -1; y <= 1; y++) {
           for (let x = -1; x <= 1; x++) {
-            if(x !== 0 && y !== 0){
-              g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 );
-              h = Math.round(Math.sqrt(Math.pow(end.x + j+x,2) + Math.pow(end.y + i+y,2))* 10 );
-              
-              if(pathfindArray[currentTile.y+y][currentTile.x+x].parent !== 'start'){
-                pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+            if(x !== 0 || y !== 0){
+              if(currentTile.y + y >= 0 && currentTile.x + x >= 0){
+                if(!map[currentTile.y+y][currentTile.x+x].hasCollision){
+                  g = Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2))* 10 ) + currentTile.gCost;
+                  h = Math.round(Math.sqrt(Math.pow(end.x - (currentTile.x+x),2) + Math.pow(end.y - (currentTile.y+y),2))* 10 );
+                  
+                  if(pathfindArray[currentTile.y+y][currentTile.x+x].length === 0){
+                    pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                  }
+                  else{
+                    if(!pathfindArray[currentTile.y+y][currentTile.x+x].closed && pathfindArray[currentTile.y+y][currentTile.x+x].gCost > g){
+                      pathfindArray[currentTile.y+y][currentTile.x+x] = new PathFindTile(currentTile.x+x, currentTile.y+y, g, h, currentTile)
+                    }
+                  }
+                } 
               }
             }
           }
         }
       }
       isNextToWall = false;
-      if(pathfindArray[end.y][end.x] !== undefined){
+      currentTile.closed = true;
+      lastTile = currentTile;
+
+      if(pathfindArray[end.y][end.x].length !== 0){
         atEnd = true;
+        if(map[end.y][end.x].hasCollision){
+          path.push(lastTile)
+        }
+        else{
+          path.push(pathfindArray[end.y][end.x])
+        }
+      }
+    }
+    while(!madePath){
+      if(path[path.length-1] !== pathfindArray[start.y][start.x]){
+        path.push(path[path.length-1].parent)
+      }
+      else{
+        madePath = true;
       }
     }
     return path
