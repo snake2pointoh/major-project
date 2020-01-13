@@ -1,6 +1,5 @@
 
 i = 15
-
 function doPhys() {
     if (scene === "game") {
         gamePhys()
@@ -19,7 +18,9 @@ function gamePhys() {
         }
         i = 15
     }
-    else i--
+    else{
+        i--
+    } 
 }
 
 function edditorPhys() {

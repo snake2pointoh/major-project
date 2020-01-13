@@ -363,7 +363,7 @@ function mouseClicked() {
       }
       console.log("saved");
       var JsonSave = {
-        saveData: saveLoad,
+        saveData: saveLoad
       }
       saveJSON(JsonSave, "MapSaveData");
     }

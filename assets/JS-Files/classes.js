@@ -1620,6 +1620,7 @@ class GridGen {
     return path
   }
 }
+
 class PathFindTile{
   constructor(x1,y1,g1,h1,parentArray1){      
     this.x = x1;
