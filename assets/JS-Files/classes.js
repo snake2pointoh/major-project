@@ -46,6 +46,7 @@ class PlayerCharacter {
       w: this.w + (this.w/3)*2,
       h: this.h + (this.h/3)*2
     }
+
     this.Hitbox = {
       x: this.x - this.w/2,
       y: this.y - this.h/2,

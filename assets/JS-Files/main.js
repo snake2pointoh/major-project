@@ -94,6 +94,7 @@ let doorId;
 let doorEditorText = [];
 
 let ai = [];
+
 //TODO//
 /*
 complete item edditor
@@ -232,7 +233,6 @@ function setup() {
 
 function draw() {
   background(backgroundColour);
-
   playerPos = [[mapOffsetX/64 *-1],[mapOffsetY/64 *-1]]
   //console.log(mapOffsetX/64 *-1 + " " + mapOffsetY/64 *-1);
   if (scene === "menu") {
@@ -485,3 +485,4 @@ function teleport(xVal,yVal){
 //     teleport(array[i].x, array[i].y)
 //   }
 // }
+
