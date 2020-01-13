@@ -92,6 +92,9 @@ let doorWorldId;
 let doorOutId;
 let doorId;
 let doorEditorText = [];
+
+let ai = [];
+
 //TODO//
 /*
 complete item edditor
@@ -213,6 +216,9 @@ function setup() {
   newMapEditorButtons[0] = new Button(50, 150, 64, 64, "Create Map")
   newMapEditorButtons[1] = new Button(150, 150, 64, 64, "Delete Map")
 
+  //AI//
+  //ai[0] = new AiBase(width/2, height/2, 30, 0)
+
   //fill the saveLoad array//
   saveLoad = []
   for (let y = 0; y < mapList[0].grid.length; y++) {
@@ -260,6 +266,7 @@ function draw() {
     lastFPSMillis = millis()
     fpsCounter = Math.round(frameRate())
   }
+
   doPhys()
 }
 
@@ -402,6 +409,9 @@ function drawMenu() {
 function drawGame() {
   mapList[currentMap].draw()
   Player.draw()
+  for (let i = 0; i < ai.length; i++) {
+    ai[i].draw()
+  }
 }
 
 function drawEditor() {
@@ -467,4 +477,12 @@ function resetVals() {
 function teleport(xVal,yVal){
   mapOffsetX = xVal*64 *-1
   mapOffsetY = yVal*64 *-1
+  console.log('teleported!')
 }
+
+// function doPath(array){
+//   for (let i = array.length -1; i >= 0; i--) {
+//     teleport(array[i].x, array[i].y)
+//   }
+// }
+
