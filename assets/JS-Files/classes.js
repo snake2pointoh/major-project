@@ -53,22 +53,45 @@ class PlayerCharacter {
       w: this.w,
       h: this.h
     }
+    this.meleHitbox = {
+      rad: 100,
+      angle: atan2(mouseY - height/2, mouseX - width/2),
+      x: cos(this.angle) * (this.rad/2) + width/2,
+      y: sin(this.angle) * (this.rad/2) + height/2
+    }
 
     this.Inv = new Inventory(60, 110, 4, 5, 80);
+
+    this.equippedItem;
+
+    this.hpMax = 100;
+    this.hp = 100;
+
+    this.baseDamage = 10;
+
+    this.itemDamage = 0;
   }
 
   draw() {
+    if(this.hp <= 0){
+      this.death()
+    }
+    if(this.hp > this.hpMax){
+      this.hp = this.hpMax;
+    }
+    if(this.equipItem !== undefined){
+      this.itemDamage = this.equipItem.damage
+    }
+
     //meleHitbox//
-    let rad = 50;
-    let angle = atan2(mouseY - height/2, mouseX - width/2)
-    let x = cos(angle) * 50 + width/2
-    let y = sin(angle) * 50 + height/2
+    this.meleHitbox.angle = atan2(mouseY - height/2, mouseX - width/2)
+    this.meleHitbox.x = cos(this.meleHitbox.angle) * (this.meleHitbox.rad/2) + width/2
+    this.meleHitbox.y = sin(this.meleHitbox.angle) * (this.meleHitbox.rad/2) + height/2
     //
+
     this.Inv.draw()
 
     push()
-    //rectMode(CORNER)
-    
     if (showDebug) {
       push()
       //item pickup hitbox//
@@ -82,14 +105,16 @@ class PlayerCharacter {
       rect(this.topX, this.topY, this.topW, this.topH) //top
       //mele hit detection hitbox//
       fill('yellow')
-      circle(x,y,rad)
+      circle(this.meleHitbox.x,this.meleHitbox.y,this.meleHitbox.rad)
       pop()
     }
-
+    fill('green')
+    rect(this.x - this.w / 2, this.y - this.h/2 - 15, this.w/(this.hpMax/this.hp), 10)
+    fill('white')
     rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
     pop()
   }
-
+  
   move(direction) {
     if (direction === "up" && this.top) {
       mapOffsetY += this.movespeed
@@ -104,6 +129,7 @@ class PlayerCharacter {
       mapOffsetX -= this.movespeed
     }
   }
+  
   collisionDetect(map) {
     this.left = true
     this.right = true
@@ -152,6 +178,7 @@ class PlayerCharacter {
       }
     }
   }
+  
   pickUpItem(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
@@ -182,6 +209,24 @@ class PlayerCharacter {
       }
     }
   }
+  attack(){
+    let dist;
+    for (let i = 0; i < ai.length; i++) {
+      dist = Math.round(Math.sqrt(Math.pow((ai[i].position.x + mapOffsetX) - (this.meleHitbox.x),2) + Math.pow((ai[i].position.y + mapOffsetY) - (this.meleHitbox.y),2)));
+      if(dist < this.meleHitbox.rad/2){
+        ai[i].damage(this.baseDamage + this.itemDamage)
+      }
+    }
+  }
+
+  damage(ammount){
+    this.hp -= ammount
+  }
+
+  death(){
+    startGame()
+  }
+
 }
 
 class Hotbar {
@@ -200,6 +245,18 @@ class Hotbar {
   draw() {
     for (let i = 0; i < this.grid.length; i++) {
       this.grid[i].draw()
+    }
+  }
+  equipItem(spot){
+    spot -= 1
+    if(this.grid[spot].item !== undefined){
+      if(this.grid[spot].item.item.type !== "potion"){
+        Player.equipItem = this.grid[spot].item.item
+      }
+      else{
+        Player.hp += 10;
+        this.grid[spot].item = undefined;
+      }
     }
   }
 }
@@ -299,6 +356,10 @@ class Inventory {
     item1.selected = false;
     this.selectedTile = undefined;
   }
+
+  emptyInv(){
+    this.items = [];
+  }
 }
 
 class InventoryTile {
@@ -362,7 +423,7 @@ class InventoryItem {
 //items//
 //add more item types to spawn point//
 class itemSpawnPoint{
-  constructor(x1,y1,size1,randonly1,custonly1,custitem1,itemtype1,){
+  constructor(x1,y1,size1,randonly1,custonly1,custitem1,itemtype1){
     this.x = x1;
     this.y = y1;
     this.w = size1;
@@ -541,7 +602,27 @@ class PotionItem {
 
 //Ai//
 class AiSpawn{
-  constructor(){
+  constructor(x1,y1,size1,map1){
+    this.x = x1;
+    this.y = y1;
+    this.map = map1;
+    this.size = size1;
+    this.yPos = this.y + mapOffsetY
+    this.xPos = this.x + mapOffsetX
+  }
+  draw(){
+    if(!playing){
+      this.xPos = this.x + mapOffsetX
+      this.yPos = this.y + mapOffsetY
+      push()
+      fill(200,0,0);
+      rect(this.xPos, this.yPos, this.size, this.size);
+      pop()
+    }
+  }
+
+  spawnAi(){
+    ai.push(new AiBase(this.x, this.y, 30, this.map))
 
   }
 }
@@ -565,23 +646,61 @@ class AiBase{
     }
 
     this.path;
+    this.optDist = 250;
+    this.maxDist = 700;
+    this.hpMax = 100;
+    this.hp = 100;
+
+    this.meleHitbox = {
+      rad: 50,
+      angle: atan2(mouseY - height/2, mouseX - width/2),
+      x: cos(this.angle) * (this.rad/2) + width/2,
+      y: sin(this.angle) * (this.rad/2) + height/2
+    }
+
+    this.counter = 0;
   }
   draw(){
+    let dist;
+    this.meleHitbox.angle = atan2(Player.y - this.position.y - mapOffsetY, Player.x - this.position.x - mapOffsetX)
+    this.meleHitbox.x = cos(this.meleHitbox.angle) * (this.meleHitbox.rad/2)
+    this.meleHitbox.y = sin(this.meleHitbox.angle) * (this.meleHitbox.rad/2)
+
+
     this.Hitbox.x = this.position.x - this.size/2
     this.Hitbox.y = this.position.y - this.size/2
     
     if(this.map === currentMap){
+      if(this.hp <= 0){
+        this.death()
+      }
       push()
+      //circle(this.position.x + mapOffsetX + this.meleHitbox.x, this.position.y + mapOffsetY + this.meleHitbox.y, this.meleHitbox.rad)
+      
       fill('red')
       rect(this.Hitbox.x + mapOffsetX, this.Hitbox.y + mapOffsetY, this.Hitbox.w, this.Hitbox.h);
+      fill('green')
+      rect(this.Hitbox.x + mapOffsetX, this.Hitbox.y + mapOffsetY - 15, this.Hitbox.w / (this.hpMax/this.hp), 10);
+
       pop()
       if(this.path !== undefined){
         if(this.path.length > 0){
           this.move(this.path[this.path.length-1])
         }
       }
+      dist = Math.round(Math.sqrt(Math.pow((this.position.x + mapOffsetX + this.meleHitbox.x) - (Player.x),2) + Math.pow((this.position.y + mapOffsetY + this.meleHitbox.y) - (Player.y),2)));
+      if(dist < this.meleHitbox.rad/2){
+        if(this.counter <= 0){
+          Player.damage(5)
+          this.counter = 30
+        }
+      }
+      if(this.counter > 0){
+        this.counter--
+      }
     }
   }
+
   getCurrentTile(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
@@ -622,22 +741,36 @@ class AiBase{
   }
 
   pathfind(){
-    if(this.map === currentMap){
+    let dist = Math.round(Math.sqrt(Math.pow((this.position.x + mapOffsetX) - (Player.x),2) + Math.pow((this.position.y + mapOffsetY) - (Player.y),2)));
+    //console.log(dist)
+    if(this.map === currentMap && dist < this.maxDist){
       try {
-        this.path = mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
-        this.path.pop()
+        if(dist < this.optDist || this.path === undefined){
+          this.path = mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
+          this.path.pop()
+        }
+        else{
+          if(this.path.length === 0){
+            this.path = mapList[currentMap].pathfind(this.getCurrentTile(mapList[currentMap].grid), Player.getCurrentTile(mapList[currentMap].grid))
+            this.path.pop()
+          }
+        }
       } catch (error) {
-        console.log("Pathfind Error")
+        console.log("Pathfind Error" + error)
       }
     }
+    else this.path = undefined;
+  }
+
+  damage(ammount){
+    this.hp -= ammount
+  }
+
+  death(){
+    ai.splice(ai.indexOf(this),1)
   }
 }
 
-class EnemyAi extends AiBase{
-  constructor(x1,y1,size1,map1){
-    super(x1,y1,size1);
-  }
-}
 //Ai//
 class areaBrush {
   constructor(x1, y1) {
@@ -1376,6 +1509,7 @@ class GridItem {
     this.Ypos = this.y + this.offsetY
 
     this.itemSpawner;
+    this.aiSpawner;
 
     this.isDoor = false;
 
@@ -1399,6 +1533,10 @@ class GridItem {
       if(this.itemSpawner !== undefined){
         this.itemSpawner.draw()
       }
+      if(this.aiSpawner !== undefined){
+        this.aiSpawner.draw()
+      }
+
       if(!playing && this.isDoor){
         textAlign(CENTER, CENTER)
         textSize(this.h/6)
@@ -1418,13 +1556,83 @@ class GridItem {
     }
   }
   save(list) {
-    let textureId = textures.indexOf(this.tile);
+    let itemData = {
+    }
+    let aiData = {
+    }
+    
+    let cutsomItem;
+    
+    if(this.itemSpawner !== undefined){
+      
+      if(this.itemSpawner.custItem !== null){
+        cutsomItem = worldItems.indexOf(this.itemSpawner.custItem)
+      }
+      else{
+        customItem = null;
+      }
+      
+      itemData = {
+        hasSpawner: true,
+        x: this.itemSpawner.x,
+        y: this.itemSpawner.y,
+        size: this.itemSpawner.w,
+        randOnly: this.itemSpawner.randOnly,
+        custOnly: this.itemSpawner.custOnly,
+        custItem: customItem,
+        itemType: this.itemSpawner.itemType
 
-    list.push(textureId);
+      }
+    }
+    else{
+      itemData = {
+        hasSpawner: false,
+      }
+    }
+
+    if(this.aiSpawner !== undefined){
+      aiData = {
+        hasSpawner: true,
+        x: this.aiSpawner.x,
+        y: this.aiSpawner.y,
+        size: this.aiSpawner.size,
+        map: this.aiSpawner.map
+      }
+    }
+    else{
+      aiData = {
+        hasSpawner: false,
+      }
+    }
+
+    let savedata = {
+      textureId: textures.indexOf(this.tile),
+      isDoor: this.isDoor,
+      doorId: this.doorId,
+      DoorOut: this.DoorOut,
+      MapOut: this.MapOut,
+      doorDirection: this.doorDirection,
+      items: itemData,
+      ai: aiData
+    }
+    list.push(savedata);
   }
   load(data) {
-    this.tile = textures[data]
-    this.hasCollision = textures[data].hasCollision
+    this.tile = textures[data.textureId]
+    this.hasCollision = textures[data.textureId].hasCollision
+
+    this.isDoor = data.isDoor
+    this.doorId = data.doorId
+    this.DoorOut = data.DoorOut
+    this.MapOut = data.MapOut
+    this.doorDirection = data.doorDirection
+    if(data.items.hasSpawner){
+      let item = worldItems[data.items.custItem];
+      this.itemSpawner = new itemSpawnPoint(this.x + 10, this.y + 10, this.w -20 ,data.items.randOnly ,data.items.custOnly ,item ,data.items.itemType)
+    }
+    if(data.ai.hasSpawner){
+      this.aiSpawner = new AiSpawn(this.x + 10, this.y + 10, this.w -20 ,data.ai.map);
+    }
   }
   doDoorStuff(){
     let xPos = (this.x - width/2 + 32)
@@ -1483,7 +1691,6 @@ class GridGen {
     }
   }
   pathfind(start,end){
-    //console.log(start,end)
     let pathfindArray = []
     let path = [];
     let atEnd = false

@@ -1,4 +1,5 @@
 
+numbers = [1,2,3,4,5,6,7,8,9];
 
 function keyTyped() {
   if (scene === "editor") {
@@ -32,6 +33,13 @@ function keyTyped() {
         if (newMapEditorTextbox[i].focused) {
           newMapEditorTextbox[i].updateText(key)
         }
+      }
+    }
+  }
+  if(scene === "game"){
+    for (let i = 0; i < numbers.length; i++) {
+      if(key == numbers[i]){
+        Player.Inv.Hotbar.equipItem(numbers[i])
       }
     }
   }
@@ -149,6 +157,11 @@ function mouseClicked() {
         brushMode = "ItemSpawnAdd"
       }
 
+      if(edditorMapMenuButtons[2].mouseOn()){
+        edditorMapMenu = "ai"
+        brushMode = "AiSpawnAdd"
+      }
+
       if(edditorMapMenu === "tiles"){
         //select what tile to paint//
         if(mapSelectionButtons[0].mouseOn()){
@@ -238,6 +251,15 @@ function mouseClicked() {
         if(customItemList.mouseOn() !== undefined){
           customItem = customItemList.mouseOn()
           console.log('item updated')
+        }
+      }
+
+      if(edditorMapMenu === "ai"){
+        if(edditorAiButtons[0].mouseOn()){
+          brushMode = "AiSpawnAdd"
+        }
+        if(edditorAiButtons[1].mouseOn()){
+          brushMode = "AiSpawnRemove"
         }
       }
 
@@ -342,11 +364,10 @@ function mouseClicked() {
         mapSelectorList.update()
       }
       if(newMapEditorButtons[1].mouseOn()){
-        if(mapList.length > 1){
           mapList.splice(currentMap, 1)
           currentMap = 0;
+          //mapSelectorList.array = mapList
           mapSelectorList.update()
-        }
       }
 
       if(mapSelectorList.mouseOn() !== undefined){
@@ -355,15 +376,78 @@ function mouseClicked() {
     }
     //save load//UPDATE FOR 2D ARRAY
     if (Buttons[0].mouseOn()) { //save//
+      let items = [[],[],[],[]];
       saveLoad = []
-      for (let y = 0; y < mapList[0].grid.length; y++) {
-        for (let x = 0; x < mapList[0].grid[y].length; x++) {
-          mapList[0].grid[y][x].save(saveLoad)
+      for (let i = 0; i < mapList.length; i++) {
+        saveLoad.push([[], mapList[i].SizeX, mapList[i].SizeY])
+        for (let y = 0; y < mapList[i].grid.length; y++) {
+          for (let x = 0; x < mapList[i].grid[y].length; x++) {
+            mapList[i].grid[y][x].save(saveLoad[i][0])
+          }
         }
       }
+      //worldItems = [[],[],[],[]]; //sword, bow, staff, potion//array order//
+      for (let y = 0; y < worldItems.length; y++) {
+        for (let x = 0; x < worldItems[y].length; x++) {
+
+          if(worldItems[y][x].type === "sword"){
+            let icon = swordTextures.indexOf(worldItems[y][x].icon)
+            
+            items[0].push({
+              type: worldItems[y][x].type,
+              v1: worldItems[y][x].attackRange,
+              v2: worldItems[y][x].attackSpeed,
+              v3: worldItems[y][x].damage,
+              v4: worldItems[y][x].name,
+              v5: icon
+            })
+          }
+          
+          if(worldItems[y][x].type === "bow"){
+            let icon = bowTextures.indexOf(worldItems[y][x].icon)
+            
+            items[1].push({
+              type: worldItems[y][x].type,
+              v1: worldItems[y][x].range,
+              v2: worldItems[y][x].drawSpeed,
+              v3: worldItems[y][x].damage,
+              v4: worldItems[y][x].name,
+              v5: icon
+            })
+          }
+          
+          if(worldItems[y][x].type === "staff"){
+            let icon = staffTextures.indexOf(worldItems[y][x].icon)
+            
+            items[2].push({
+              type: worldItems[y][x].type,
+              v1: worldItems[y][x].castRange,
+              v2: worldItems[y][x].castSpeed,
+              v3: worldItems[y][x].damage,
+              v4: worldItems[y][x].name,
+              v5: icon
+            })
+          }
+          
+          if(worldItems[y][x].type === "potion"){
+            let icon = potionTextures.indexOf(worldItems[y][x].icon)
+            
+            items[3].push({
+              type: worldItems[y][x].type,
+              v1: worldItems[y][x].duration,
+              v2: worldItems[y][x].affect,
+              v3: worldItems[y][x].strength,
+              v4: worldItems[y][x].name,
+              v5: icon
+            })
+          }
+        }
+      }
+
       console.log("saved");
       var JsonSave = {
-        saveData: saveLoad
+        saveData: saveLoad,
+        items: items
       }
       saveJSON(JsonSave, "MapSaveData");
     }
@@ -401,6 +485,7 @@ function mouseClicked() {
     if(Player.Inv.invOpen){
       Player.Inv.mouseOn()
     }
+    Player.attack()
   }
 
   if (scene === "menu") {
