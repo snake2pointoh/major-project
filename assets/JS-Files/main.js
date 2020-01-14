@@ -391,7 +391,7 @@ function loadMap(data) {
   }
   
   //load maps//
-  for (let i = 0; i < data.saveData[0].length; i++) {
+  for (let i = 0; i < data.saveData.length; i++) {
     mapList.push(new GridGen(data.saveData[i][1], data.saveData[i][2], 64, textures[1]))
 
     let g = 0;
