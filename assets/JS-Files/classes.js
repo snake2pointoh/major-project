@@ -195,7 +195,6 @@ class PlayerCharacter {
       }
     }
   }
-
   getCurrentTile(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
@@ -210,7 +209,6 @@ class PlayerCharacter {
       }
     }
   }
-
   attack(){
     let dist;
     for (let i = 0; i < ai.length; i++) {
@@ -228,6 +226,7 @@ class PlayerCharacter {
   death(){
     startGame()
   }
+
 }
 
 class Hotbar {
@@ -624,6 +623,7 @@ class AiSpawn{
 
   spawnAi(){
     ai.push(new AiBase(this.x, this.y, 30, this.map))
+
   }
 }
 
@@ -666,6 +666,7 @@ class AiBase{
     this.meleHitbox.x = cos(this.meleHitbox.angle) * (this.meleHitbox.rad/2)
     this.meleHitbox.y = sin(this.meleHitbox.angle) * (this.meleHitbox.rad/2)
 
+
     this.Hitbox.x = this.position.x - this.size/2
     this.Hitbox.y = this.position.y - this.size/2
     
@@ -680,6 +681,7 @@ class AiBase{
       rect(this.Hitbox.x + mapOffsetX, this.Hitbox.y + mapOffsetY, this.Hitbox.w, this.Hitbox.h);
       fill('green')
       rect(this.Hitbox.x + mapOffsetX, this.Hitbox.y + mapOffsetY - 15, this.Hitbox.w / (this.hpMax/this.hp), 10);
+
       pop()
       if(this.path !== undefined){
         if(this.path.length > 0){
@@ -1688,7 +1690,6 @@ class GridGen {
       }
     }
   }
-
   pathfind(start,end){
     let pathfindArray = []
     let path = [];
