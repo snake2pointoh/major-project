@@ -1833,6 +1833,10 @@ class GridGen {
           }
         }
       }
+      if(lastTile === currentTile){
+        atEnd = true;
+      }
+
       isNextToWall = false;
       currentTile.closed = true;
       lastTile = currentTile;
