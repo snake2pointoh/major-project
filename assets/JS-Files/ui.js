@@ -68,6 +68,11 @@ function mapEditorUi(){
     }
     customItemList.draw()
   }
+  if(edditorMapMenu === "ai"){
+    for(let i = 0; i < edditorAiButtons.length; i++){
+      edditorAiButtons[i].draw()
+    }
+  }
 }
 
 function menuUi(){
@@ -100,4 +105,14 @@ function newMapEditorUi(){
   }
   
   mapSelectorList.draw()
+}
+
+function gameUi(){
+  push()
+  rect(10,height-130, 300,100)
+  textAlign(CENTER, CENTER)
+  textSize(30)
+  text(Player.itemDamage + " Weapon Damage",20,height-125, 300,100)
+  pop()
+
 }

@@ -38,6 +38,7 @@ let saveLoad = [];
 let edditorUiBackground = [];
 let edditorBrushes = [];
 let edditorItemButtons = [];
+let edditorAiButtons = [];
 let Buttons = [];
 let menuButtons = [];
 let edditorMenuButtons = [];
@@ -118,15 +119,20 @@ function setup() {
   Player = new PlayerCharacter(width / 2, height / 2, 5);
 
   //make map//
-  mapList[0] = new GridGen(400, 400, 64, textures[1])
+  //mapList[0] = new GridGen(100, 100, 64, textures[1])
 
   //edditor items & buttons//
   edditorUiBackground[0] = new UiBackground(0, 100, 200, height - 100, 80, 100);
   edditorUiBackground[1] = new UiBackground(0, 0, width, 100, 80, 100);
   edditorUiBackground[2] = new UiBackground(width - 200, 100, 200, height - 100, 80, 100);
 
-  edditorMapMenuButtons[0] = new Button(50,150,64,64,"Tiles")
-  edditorMapMenuButtons[1] = new Button(150,150,64,64,"Items")
+  edditorMapMenuButtons[0] = new Button(34,150,48,48,"Tiles")
+  edditorMapMenuButtons[1] = new Button(100,150,48,48,"Items")
+  edditorMapMenuButtons[2] = new Button(168,150,48,48,"Ai")
+
+  //ai spawn buttons//
+  edditorAiButtons[0] = new Button(50, 230, 64, 64,"Ai Spawn Add");
+  edditorAiButtons[1] = new Button(150, 230, 64, 64,"Ai Spawn Remove");
 
   //item spawn buttons//
   edditorItemButtons[0] = new Button(50, 230, 64, 64,"Item Spawn Add");
@@ -215,16 +221,7 @@ function setup() {
   newMapEditorButtons[0] = new Button(50, 150, 64, 64, "Create Map")
   newMapEditorButtons[1] = new Button(150, 150, 64, 64, "Delete Map")
 
-  //AI//
-  //ai[0] = new AiBase(width/2, height/2, 30, 0)
-
-  //fill the saveLoad array//
-  saveLoad = []
-  for (let y = 0; y < mapList[0].grid.length; y++) {
-    for (let x = 0; x < mapList[0].grid[y].length; x++) {
-      mapList[0].grid[y][x].save(saveLoad)
-    }
-  }
+  loadJSON("assets/MapSaveData.json", loadMap)
   console.log("saved");
 
   selectedTexture = textures[1]
@@ -241,6 +238,7 @@ function draw() {
 
   if (scene === "game") {
     drawGame()
+    aiPath()
   }
 
   if (scene === "editor") {
@@ -313,6 +311,16 @@ function mapEdditor(mapGrid) {
               mapGrid[y][x].itemSpawner = undefined;
             }
           }
+          if (brushMode === "AiSpawnAdd") {
+            if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
+              mapGrid[y][x].aiSpawner = new AiSpawn(mapGrid[y][x].x + 10, mapGrid[y][x].y + 10, mapGrid[y][x].w -20, currentMap)
+            }
+          }
+          if (brushMode === "AiSpawnRemove") {
+            if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
+              mapGrid[y][x].aiSpawner = undefined;
+            }
+          }
         }
       }
     }
@@ -323,16 +331,16 @@ function mapEdditor(mapGrid) {
 function randomItemGen(itemType){
   let item;
   if(itemType === "sword"){
-    item = new SwordItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "sword", swordTextures[Math.round(random(0, swordTextures.length-1))])
+    item = new SwordItem(Math.round(random(70, 120)), Math.round(random(1, 5)), Math.round(random(10, 60)), "sword", swordTextures[Math.round(random(0, swordTextures.length-1))])
   }
   if(itemType === "bow"){
-    item = new BowItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "bow", bowTextures[Math.round(random(0, bowTextures.length-1))])
+    item = new BowItem(Math.round(random(70, 120)), Math.round(random(1, 5)), Math.round(random(10, 60)), "bow", bowTextures[Math.round(random(0, bowTextures.length-1))])
   }
   if(itemType === "staff"){
-    item = new StaffItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "staff", staffTextures[Math.round(random(0, staffTextures.length-1))])
+    item = new StaffItem(Math.round(random(70, 120)), Math.round(random(1, 5)), Math.round(random(10, 60)), "staff", staffTextures[Math.round(random(0, staffTextures.length-1))])
   }
   if(itemType === "potion"){
-    item = new PotionItem(Math.round(random(64, 128)), Math.round(random(900, 1500)), Math.round(random(100, 500)), "potion", potionTextures[Math.round(random(0, potionTextures.length-1))])
+    item = new PotionItem(Math.round(random(70, 120)), Math.round(random(1, 5)), Math.round(random(10, 60)), "potion", potionTextures[Math.round(random(0, potionTextures.length-1))])
   }
   return item;
 }
@@ -359,15 +367,46 @@ function itemCreator(itemType) {
 }
 
 function loadMap(data) {
-  console.log(data.saveData);
-  saveLoad = data.saveData;
-  let i = 0;
-  for (let y = 0; y < mapList[0].grid.length; y++) {
-    for (let x = 0; x < mapList[0].grid[y].length; x++) {
-      mapList[0].grid[y][x].load(saveLoad[i])
-      i++
+  mapList = [];
+  worldItems = [[],[],[],[]];
+  currentMap = 0;
+  
+  //load items//
+  for (let i = 0; i < data.items.length; i++) {
+    for (let j = 0; j < data.items[i].length; j++) {
+      let item = data.items[i];
+      if(item.type === "sword"){
+        worldItems[0].push(new SwordItem(item.v1, item.v2, item.v3, item.v4, swordTexture[item.v5]))
+      }
+      if(item.type === "bow"){
+        worldItems[1].push(new BowItem(item.v1, item.v2, item.v3, item.v4, bowTextures[item.v5]))
+      }
+      if(item.type === "staff"){
+        worldItems[2].push(new StaffItem(item.v1, item.v2, item.v3, item.v4, staffTextures[item.v5]))
+      }
+      if(item.type === "potion"){
+        worldItems[3].push(new PotionItem(item.v1, item.v2, item.v3, item.v4, potionTextures[item.v5]))
+      }
     }
   }
+  
+  //load maps//
+  for (let i = 0; i < data.saveData[0].length; i++) {
+    mapList.push(new GridGen(data.saveData[i][1], data.saveData[i][2], 64, textures[1]))
+
+    let g = 0;
+    for (let y = 0; y < mapList[i].grid.length; y++) {
+      for (let x = 0; x < mapList[i].grid[y].length; x++) {
+        mapList[i].grid[y][x].load(data.saveData[i][0][g])
+        g++
+      }
+    }
+  }
+
+  mapSelectorList.array = mapList
+  mapSelectorList.update()
+  customItemList.update();
+
   console.log("Loaded");
 }
 
@@ -399,6 +438,7 @@ function calledFromHTML() {
   reader.readAsText(jsonF)
   reader.onloadend = function () {
     json = JSON.parse(reader.result)
+    //console.log(reader.result)
   }
 }
 
@@ -407,16 +447,21 @@ function drawMenu() {
 }
 
 function drawGame() {
-  mapList[currentMap].draw()
+  if(mapList.length > 0){
+    mapList[currentMap].draw()
+  }
   Player.draw()
   for (let i = 0; i < ai.length; i++) {
     ai[i].draw()
   }
+  gameUi()
 }
 
 function drawEditor() {
   if (edditorMenu === "map") {
-    mapList[currentMap].draw()
+    if(mapList.length > 0){
+      mapList[currentMap].draw()
+    }
     editorUi();
     mapEditorUi();
 
@@ -429,21 +474,31 @@ function drawEditor() {
     itemEditorUi();
   }
   if (edditorMenu === "newMap") {
-    mapList[currentMap].draw()
+    if(mapList.length > 0){
+      mapList[currentMap].draw()
+    }
     editorUi();
     newMapEditorUi();
   }
 }
 
 function startGame(){
+  currentMap = 0;
+  mapOffsetX = 0
+  mapOffsetY = 0
+  Player.hp = Player.hpMax;
   playing = true;
   backgroundColour = 0;
-  currentMap = 0;
+  ai = [];
+  Player.Inv.emptyInv()
   for(let i = 0; i < mapList.length; i++){
     for (let y = 0; y < mapList[i].grid.length; y++) {
       for (let x = 0; x < mapList[i].grid[y].length; x++) {
         if(mapList[i].grid[y][x].itemSpawner !== undefined){
           mapList[i].grid[y][x].itemSpawner.spawnItem()
+        }
+        if(mapList[i].grid[y][x].aiSpawner !== undefined){
+          mapList[i].grid[y][x].aiSpawner.spawnAi()
         }
       }
     }
