@@ -622,7 +622,7 @@ class AiSpawn{
   }
 
   spawnAi(){
-    ai.push(new AiBase(this.x, this.y, 30, this.map))
+    ai.push(new AiBase(this.x + 22, this.y + 22, 30, this.map))
 
   }
 }
