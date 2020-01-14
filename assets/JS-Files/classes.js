@@ -68,17 +68,20 @@ class PlayerCharacter {
     this.hp = 100;
 
     this.baseDamage = 10;
-
+    this.dead = false;
     this.itemDamage = 0;
   }
 
   draw() {
     if(this.hp <= 0){
+      this.dead = true
       this.death()
     }
+
     if(this.hp > this.hpMax){
       this.hp = this.hpMax;
     }
+
     if(this.equipItem !== undefined){
       this.itemDamage = this.equipItem.damage
     }
@@ -172,7 +175,13 @@ class PlayerCharacter {
           if(this.Hitbox.x > map[y][x].Xpos + map[y][x].w || this.Hitbox.x + this.Hitbox.w < map[y][x].Xpos || this.Hitbox.y > map[y][x].Ypos + map[y][x].h || this.Hitbox.y + this.Hitbox.h < map[y][x].Ypos){
           }
           else{
-            map[y][x].doDoorStuff();
+            if(!this.dead){
+              map[y][x].doDoorStuff();
+            }
+            //patch for a bug that i dont know why it happens//
+            else{
+              this.dead = false;
+            }
           }
         }
       }
@@ -224,7 +233,13 @@ class PlayerCharacter {
   }
 
   death(){
+    // currentMap = 0;
+    // mapOffsetX = 0
+    // mapOffsetY = 0
+    // Player.Inv.emptyInv()
+    // Player.hp = Player.hpMax;
     startGame()
+    console.log("dead")
   }
 
 }
@@ -254,9 +269,14 @@ class Hotbar {
         Player.equipItem = this.grid[spot].item.item
       }
       else{
-        Player.hp += 10;
+        Player.hp += 20;
         this.grid[spot].item = undefined;
       }
+    }
+  }
+  emptyInv(){
+    for (let i = 0; i < this.grid.length; i++) {
+      this.grid[i].item = undefined;
     }
   }
 }
@@ -358,7 +378,12 @@ class Inventory {
   }
 
   emptyInv(){
-    this.items = [];
+    for (let y = 0; y < this.grid.length; y++) {
+      for (let x = 0; x < this.grid[y].length; x++) {
+        this.grid[y][x].item = undefined;
+      }
+    }
+    this.Hotbar.emptyInv()
   }
 }
 
@@ -515,20 +540,25 @@ class itemSpawnPoint{
     if(this.custOnly === true && worldItems[itemNum].length > 0 ){
       if(this.custItem === null){
         item = worldItems[0][Math.round(random(0, worldItems[itemNum].length - 1))]
+        this.draw()
       }
       else item = this.custItem
+      this.draw()
     }
     else{
-      if(worldItems[0].length > 0 && this.randOnly === false){
+      if(worldItems[itemNum].length > 0 && this.randOnly === false){
         if(random(0,100) < 31){
-          item = worldItems[0][Math.round(random(0, worldItems[itemNum].length - 1))]
+          item = worldItems[itemNum][Math.round(random(0, worldItems[itemNum].length - 1))]
+          this.draw()
         }
         else{
           item = randomItemGen(this.itemType)
+          this.draw()
         }
       }
       else{
         item = randomItemGen(this.itemType)
+        this.draw()
       }
     }
     this.pickUp = new ItemPickup(this.x, this.y, this.w ,item)
@@ -691,7 +721,7 @@ class AiBase{
       dist = Math.round(Math.sqrt(Math.pow((this.position.x + mapOffsetX + this.meleHitbox.x) - (Player.x),2) + Math.pow((this.position.y + mapOffsetY + this.meleHitbox.y) - (Player.y),2)));
       if(dist < this.meleHitbox.rad/2){
         if(this.counter <= 0){
-          Player.damage(5)
+          Player.damage(10)
           this.counter = 30
         }
       }

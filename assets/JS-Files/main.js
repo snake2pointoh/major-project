@@ -402,8 +402,9 @@ function loadMap(data) {
     }
   }
 
-  mapSelectorList.array = mapList
+  mapSelectorList.array = mapList;
   mapSelectorList.update()
+  customItemList.array = worldItems;
   customItemList.update();
 
   console.log("Loaded");
@@ -486,10 +487,10 @@ function startGame(){
   mapOffsetX = 0
   mapOffsetY = 0
   Player.hp = Player.hpMax;
+  Player.Inv.emptyInv()
   playing = true;
   backgroundColour = 0;
   ai = [];
-  Player.Inv.emptyInv()
   for(let i = 0; i < mapList.length; i++){
     for (let y = 0; y < mapList[i].grid.length; y++) {
       for (let x = 0; x < mapList[i].grid[y].length; x++) {
