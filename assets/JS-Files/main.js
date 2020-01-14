@@ -231,7 +231,6 @@ function setup() {
 function draw() {
   background(backgroundColour);
   playerPos = [[mapOffsetX/64 *-1],[mapOffsetY/64 *-1]]
-  //console.log(mapOffsetX/64 *-1 + " " + mapOffsetY/64 *-1);
   if (scene === "menu") {
     drawMenu()
   }
