@@ -11,6 +11,14 @@ https://opengameart.org/users/bizmasterstudios
 https://www.youtube.com/c/BizmasterStudios
 */
 
+/*
+controls: wasd is for movement
+f to puck up items
+e for inv open/closed
+mouse1/left click for moving items in the inv, clicking on buttons/text input boxes, and attacking
+numbers 1-9 for selecting/using items in the hotbar
+*/
+
 let scene = "menu"
 
 let backgroundColour = 255;
