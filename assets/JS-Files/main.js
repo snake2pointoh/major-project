@@ -79,6 +79,7 @@ let itemCreatorType = "sword";
 let itemSpawnerType = "sword"
 
 let customItemList;
+
 //maps//
 let mapList = [];
 let currentMap = 0;
@@ -95,11 +96,6 @@ let doorId;
 let doorEditorText = [];
 
 let ai = [];
-
-//TODO//
-/*
-complete item edditor
-*/
 
 function setup() {
   frameRate(60);
@@ -228,6 +224,7 @@ function setup() {
   selectedTexture = textures[1]
 }
 
+//draws and updates everything in the game//
 function draw() {
   background(backgroundColour);
   playerPos = [[mapOffsetX/64 *-1],[mapOffsetY/64 *-1]]
@@ -258,7 +255,7 @@ function draw() {
   text(fpsCounter, 10, 40)
   pop()
 
-  //update fps counters every second//
+  //update fps counter every second//
   if(millis() > lastFPSMillis + 1000){
     lastFPSMillis = millis()
     fpsCounter = Math.round(frameRate())
@@ -267,6 +264,7 @@ function draw() {
   doPhys()
 }
 
+//does all map edditor functionallity//
 function mapEdditor(mapGrid) {
   let mouseOnUi = false;
   if (!paused) {
@@ -279,6 +277,7 @@ function mapEdditor(mapGrid) {
             mouseOnUi = true
           }
         }
+        //checks if the mouse is over ui and wether to change the tiles when you press the mouse//
         if (mouseOnUi === false) {
           if (brushMode === "Single") {
             if (mouseIsPressed && mapGrid[y][x].mouseOverTile()) {
@@ -326,7 +325,7 @@ function mapEdditor(mapGrid) {
   }
 }
 
-//Balance values after combat is implamented//
+//creates and returns a random item class based on the input variable//
 function randomItemGen(itemType){
   let item;
   if(itemType === "sword"){
@@ -344,6 +343,8 @@ function randomItemGen(itemType){
   return item;
 }
 
+//used when creating custom items in the edditor//
+//it uses all the data from the text inpot boxes and creates an item of your choosing//
 function itemCreator(itemType) {
   let item;
   if (itemType === "sword") {
@@ -365,6 +366,7 @@ function itemCreator(itemType) {
   return item;
 }
 
+//loads all the data from any Json file//
 function loadMap(data) {
   mapList = [];
   worldItems = [[],[],[],[]];
@@ -410,6 +412,7 @@ function loadMap(data) {
   console.log("Loaded");
 }
 
+//controls the player movement//
 function playerController(player) {
   if (!paused && canMove) {
     if (keyIsDown(87)) {
@@ -424,28 +427,25 @@ function playerController(player) {
     if (keyIsDown(68)) {
       player.move("right")
     }
-    //sprinting//
-    // if(keyIsDown(SHIFT)){
-    //   Player.movespeed = 6
-    // }
-    // else Player.movespeed = 3
   }
 }
 
 //load custom map save//
 function calledFromHTML() {
+  //runs when you want to load a custom map save json//
   jsonF = document.getElementById("Json-file").files[0];
   reader.readAsText(jsonF)
   reader.onloadend = function () {
     json = JSON.parse(reader.result)
-    //console.log(reader.result)
   }
 }
 
+//draws menu//
 function drawMenu() {
   menuUi();
 }
 
+//draws game//
 function drawGame() {
   if(mapList.length > 0){
     mapList[currentMap].draw()
@@ -457,6 +457,7 @@ function drawGame() {
   gameUi()
 }
 
+//draws edditor//
 function drawEditor() {
   if (edditorMenu === "map") {
     if(mapList.length > 0){
@@ -482,6 +483,7 @@ function drawEditor() {
   }
 }
 
+//runs at the start of a game to reset all values and spawn ai/items//
 function startGame(){
   currentMap = 0;
   mapOffsetX = 0
@@ -505,6 +507,7 @@ function startGame(){
   }
 }
 
+//resets all values//
 function resetVals() {
   Player.left = true;
   Player.right = true;
@@ -529,15 +532,9 @@ function resetVals() {
   backgroundColour = 255;
 }
 
+//moves the palyer to spacific x/y coordinates
 function teleport(xVal,yVal){
   mapOffsetX = xVal*64 *-1
   mapOffsetY = yVal*64 *-1
   console.log('teleported!')
 }
-
-// function doPath(array){
-//   for (let i = array.length -1; i >= 0; i--) {
-//     teleport(array[i].x, array[i].y)
-//   }
-// }
-

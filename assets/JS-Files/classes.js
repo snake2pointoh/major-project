@@ -53,6 +53,7 @@ class PlayerCharacter {
       w: this.w,
       h: this.h
     }
+
     this.meleHitbox = {
       rad: 100,
       angle: atan2(mouseY - height/2, mouseX - width/2),
@@ -72,6 +73,7 @@ class PlayerCharacter {
     this.itemDamage = 0;
   }
 
+  //draws the player
   draw() {
     if(this.hp <= 0){
       this.dead = true
@@ -118,6 +120,7 @@ class PlayerCharacter {
     pop()
   }
   
+  //moves the player based on the input direction//
   move(direction) {
     if (direction === "up" && this.top) {
       mapOffsetY += this.movespeed
@@ -133,6 +136,7 @@ class PlayerCharacter {
     }
   }
   
+  //runs collision detection on input map//
   collisionDetect(map) {
     this.left = true
     this.right = true
@@ -188,13 +192,13 @@ class PlayerCharacter {
     }
   }
   
+  //checks if standing on an item and adds it to your inventory//
   pickUpItem(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
         if(map[y][x].itemSpawner !== undefined){
           let pickup = map[y][x].itemSpawner.pickUp;
           if(pickup !== undefined){
-            //fix//
             if(!(this.pickupBox.x > pickup.xPos + pickup.w || this.pickupBox.x + this.pickupBox.w < pickup.xPos || this.pickupBox.y > pickup.yPos + pickup.h || this.pickupBox.y + this.pickupBox.h < pickup.yPos)){
               let item = pickup.item
               this.Inv.addItem(item, map[y][x].itemSpawner)
@@ -204,6 +208,8 @@ class PlayerCharacter {
       }
     }
   }
+
+  //returns the x/y of the tile the player is standing on//
   getCurrentTile(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
@@ -218,6 +224,8 @@ class PlayerCharacter {
       }
     }
   }
+
+  //checks for ai in the mele hitbox and damages them//
   attack(){
     let dist;
     for (let i = 0; i < ai.length; i++) {
@@ -228,18 +236,14 @@ class PlayerCharacter {
     }
   }
 
+  //used for taking damage//
   damage(ammount){
     this.hp -= ammount
   }
 
+  //used whrn the player dies//
   death(){
-    // currentMap = 0;
-    // mapOffsetX = 0
-    // mapOffsetY = 0
-    // Player.Inv.emptyInv()
-    // Player.hp = Player.hpMax;
     startGame()
-    console.log("dead")
   }
 
 }
@@ -257,11 +261,15 @@ class Hotbar {
       this.grid.push(new InventoryTile((width / 2 + (this.tileSize) * i) - this.tileSize * this.tileCount / 2, this.y, this.tileSize, this.tileSize, true))
     }
   }
+
+  //draws the hotbar//
   draw() {
     for (let i = 0; i < this.grid.length; i++) {
       this.grid[i].draw()
     }
   }
+
+  //sets the item damage based on what item is selected//
   equipItem(spot){
     spot -= 1
     if(this.grid[spot].item !== undefined){
@@ -274,6 +282,8 @@ class Hotbar {
       }
     }
   }
+
+  //empties the hotbar//
   emptyInv(){
     for (let i = 0; i < this.grid.length; i++) {
       this.grid[i].item = undefined;
@@ -308,8 +318,8 @@ class Inventory {
 
     this.Hotbar = new Hotbar(20, 9, 60);
   }
+  //draws inventory//
   draw() {
-    //draw inventory
     if (this.invOpen) {
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[y].length; x++) {
@@ -319,6 +329,8 @@ class Inventory {
     }
     this.Hotbar.draw()
   }
+
+  //adds an item to the inv that you picked up//
   addItem(item,itemSpawn){
     for (let y = 0; y < this.grid.length; y++) {
       for (let x = 0; x < this.grid[y].length; x++) {
@@ -332,9 +344,9 @@ class Inventory {
     }
   }
   
+  //checks if the mouse is on a ttile and handles swapping tiles//
   mouseOn(){
     if(this.invOpen){
-
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[y].length; x++) {
           if(this.selectedTile === undefined){
@@ -367,6 +379,7 @@ class Inventory {
     }
   }
 
+  //swaps two input tiles positions in the inv//
   swap(item1,item2){
     let p = item1.item
     item1.item = item2.item;
@@ -377,6 +390,7 @@ class Inventory {
     this.selectedTile = undefined;
   }
 
+  //epties the inventory
   emptyInv(){
     for (let y = 0; y < this.grid.length; y++) {
       for (let x = 0; x < this.grid[y].length; x++) {
@@ -397,6 +411,8 @@ class InventoryTile {
     this.item = undefined;
     this.selected = false;
   }
+
+  //draws the inventory tile//
   draw() {
     push()
     if(this.selected){
@@ -411,6 +427,8 @@ class InventoryTile {
       this.item.draw()
     }
   }
+
+  //checkis if the mouse is on the tile//
   mouseOn() {
     if ((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)) {
       return true
@@ -419,6 +437,8 @@ class InventoryTile {
       return false
     }
   }
+
+  //updates where the tile is being drawn//
   updateItemPos(){
     if(this.item !== undefined){
       this.item.x = this.x+5;
@@ -446,7 +466,6 @@ class InventoryItem {
 }
 
 //items//
-//add more item types to spawn point//
 class itemSpawnPoint{
   constructor(x1,y1,size1,randonly1,custonly1,custitem1,itemtype1){
     this.x = x1;
@@ -505,6 +524,8 @@ class itemSpawnPoint{
       }
     }
   }
+
+  //spawns a random or custom item on the spawn point//
   spawnItem(){
     if(this.allTypes){
       let num = Math.round(random(0, 3))
@@ -565,6 +586,7 @@ class itemSpawnPoint{
   }
 }
 
+//displays an item on the ground//
 class ItemPickup {
   constructor(x1, y1, size1, item1) {
     this.x = x1;
@@ -585,6 +607,7 @@ class ItemPickup {
   }
 }
 
+//sword data//
 class SwordItem {
   constructor(attackrange1, attackspeed1, damage1, name1, icon1) {
     this.attackRange = attackrange1;
@@ -596,6 +619,7 @@ class SwordItem {
   }
 }
 
+//bow data//
 class BowItem {
   constructor(range1, drawspeed1, damage1, name1, icon1) {
     this.range = range1;
@@ -607,6 +631,7 @@ class BowItem {
   }
 }
 
+//staff data//
 class StaffItem {
   constructor(castrange1, castspeed1, damage1, name1, icon1) {
     this.castRange = castrange1;
@@ -618,6 +643,7 @@ class StaffItem {
   }
 }
 
+//potion data//
 class PotionItem {
   constructor(duration1, affect1, strength1, name1, icon1) {
     this.duration = duration1;
@@ -690,6 +716,7 @@ class AiBase{
 
     this.counter = 0;
   }
+  //draws and updates the ai//
   draw(){
     let dist;
     this.meleHitbox.angle = atan2(Player.y - this.position.y - mapOffsetY, Player.x - this.position.x - mapOffsetX)
@@ -731,6 +758,7 @@ class AiBase{
     }
   }
 
+  //gets the tile the ai is standing on//
   getCurrentTile(map){
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
@@ -746,6 +774,7 @@ class AiBase{
     }
   }
 
+  //moves the ai to the goal position//
   move(goal){
     let x = goal.x *64 + width/2;
     let y = goal.y *64 + height/2;
@@ -770,6 +799,7 @@ class AiBase{
     }
   }
 
+  //runs th pathfind code on the curret map//
   pathfind(){
     let dist = Math.round(Math.sqrt(Math.pow((this.position.x + mapOffsetX) - (Player.x),2) + Math.pow((this.position.y + mapOffsetY) - (Player.y),2)));
     //console.log(dist)
@@ -792,10 +822,12 @@ class AiBase{
     else this.path = undefined;
   }
 
+  //used for taking damage//
   damage(ammount){
     this.hp -= ammount
   }
 
+  //used when the ai dies//
   death(){
     ai.splice(ai.indexOf(this),1)
   }
@@ -813,8 +845,9 @@ class areaBrush {
   draw() {
     ellipse(this.x, this.y, 25)
   }
+
+  //update selected area rectangle//
   updateSize(width1, height1) {
-    //update selected area rectangle//
     if (width1 > this.x) {
       this.w = width1 - this.x;
     }
@@ -832,8 +865,9 @@ class areaBrush {
       this.h = (this.y - this.h) - this.y;
     }
   }
+  
+  //check if tile is in selected area and update it//
   changeTiles(map) {
-    //check if tile is in selected area and update it//
     for (let y = 0; y < map.length; y++) {
       for (let x = 0; x < map[y].length; x++) {
         if (!(this.x > map[y][x].Xpos + map[y][x].w || this.x + this.w < map[y][x].Xpos || this.y > map[y][x].Ypos + map[y][x].h || this.y + this.h < map[y][x].Ypos)) {
@@ -845,6 +879,7 @@ class areaBrush {
   }
 }
 
+//tile data//
 class tile {
   constructor(texture1, hasCollision1) {
     this.texture = texture1
@@ -884,9 +919,10 @@ class Button {
     fill(0)
     textSize(this.textSize)
     text(this.name, this.x + 2, this.y + 2, this.w, this.h)
-    //text(str, x, y, x2, y2)
     pop()
   }
+
+  //checks if the mouse is on the button//
   mouseOn() {
     if ((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)) {
       return true
@@ -982,6 +1018,8 @@ class ItemButtonList{
       }
     }
   }
+
+  //updates the displayed buttons//
   update(){
     this.buttons = [];
     this.scrollOffset = 0;
@@ -1004,6 +1042,8 @@ class ItemButtonList{
     }
     this.maxScrollOffset = ((this.buttonGap + this.buttonSize) * y-1) - this.buttonGap;
   }
+
+  //handles scrolling//
   scroll(direction,speed){
     if(this.scrollOffset *-1 < this.maxScrollOffset){
       if(direction === 'up'){
@@ -1029,6 +1069,7 @@ class ItemButtonList{
   }
 }
 
+//a list of buttons for items//
 class ItemButton {
   constructor(x1, y1, w1, h1, item1) {
 
@@ -1067,6 +1108,7 @@ class ItemButton {
   }
 }
 
+//a list of buttons with images//
 class TextureButtonList{
   constructor(x1,y1,w1,h1,buttonsize1,array1){
     //add scrolling//
@@ -1152,6 +1194,8 @@ class TextureButtonList{
       }
     }
   }
+
+  //updates the displayed buttons//
   update(){
     this.buttons = [];
     this.scrollOffset = 0;
@@ -1172,6 +1216,8 @@ class TextureButtonList{
     }
     this.maxScrollOffset = ((this.buttonGap + this.buttonSize) * y-1) - this.buttonGap;
   }
+
+  //handles scrolling//
   scroll(direction,speed){
     if(this.scrollOffset *-1 < this.maxScrollOffset){
       if(direction === 'up'){
@@ -1197,6 +1243,7 @@ class TextureButtonList{
   }
 }
 
+//a button with an image//
 class ImageButton {
   constructor(x1, y1, w1, h1, tile1) {
 
@@ -1241,6 +1288,7 @@ class ImageButton {
   }
 }
 
+//a list of buttons//
 class ButtonList{
   constructor(x1,y1,w1,h1,buttonsize1,array1){
     //add scrolling//
@@ -1371,6 +1419,7 @@ class ButtonList{
   }
 }
 
+//draws a backgrouind for the ui//
 class UiBackground {
   constructor(x1, y1, w1, h1, grayVal1, a1) {
     this.x = x1
@@ -1441,6 +1490,7 @@ class TextInputBox {
     pop()
   }
   
+  //updates text//
   updateText(textInput) {
     if (this.textData.length < this.charLimit || this.charLimit === 0) {
       if (this.numOnly) {
@@ -1455,10 +1505,12 @@ class TextInputBox {
     }
   }
 
+  //handles backspace//
   textBackspace() {
     this.textData = this.textData.slice(0, -1)
   }
 
+  //sets max number//
   setMax() {
     if (this.numOnly && this.maxNum > 0) {
       if (parseInt(this.textData) > this.maxNum) {
@@ -1467,6 +1519,8 @@ class TextInputBox {
     }
     this.focused = false;
   }
+  
+  
   mouseOn() {
     if ((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)) {
       this.focused = true
@@ -1475,11 +1529,14 @@ class TextInputBox {
       this.setMax()
     }
   }
+
+  //returns text as an int//
   returnAsNum() {
     return parseInt(this.textData)
   }
 }
 
+//a box with tex tin it//
 class TextBox {
   constructor(x1, y1, w1, h1, startingtext1) {
     this.x = x1;
@@ -1505,6 +1562,7 @@ class TextBox {
   }
 }
 
+//a box with an image in it//
 class ImageBox {
   constructor(x1, y1, w1, h1, image1) {
     this.x = x1;
@@ -1576,8 +1634,8 @@ class GridItem {
     }
   }
 
+  //check if mouse is over tile//
   mouseOverTile() {
-    //check if mouse is over tile//
     if ((mouseX > (this.x + this.offsetX) && mouseX < (this.x + this.w) + this.offsetX) && (mouseY > (this.y + this.offsetY) && mouseY < (this.y + this.h) + this.offsetY)) {
       return true
     }
@@ -1585,6 +1643,8 @@ class GridItem {
       return false
     }
   }
+
+  //saves all the data in the tile//
   save(list) {
     let itemData = {
     }
@@ -1647,6 +1707,8 @@ class GridItem {
     }
     list.push(savedata);
   }
+
+  //loads all the data fort the tile//
   load(data) {
     this.tile = textures[data.textureId]
     this.hasCollision = textures[data.textureId].hasCollision
@@ -1664,6 +1726,8 @@ class GridItem {
       this.aiSpawner = new AiSpawn(this.x + 10, this.y + 10, this.w -20 ,data.ai.map);
     }
   }
+
+  //handles walking through doors if the tile is a door//
   doDoorStuff(){
     let xPos = (this.x - width/2 + 32)
     let yPos = (this.y - height/2 + 32)
@@ -1711,6 +1775,8 @@ class GridGen {
       }
     }
   }
+
+  //draws the map//
   draw() {
     for (let y = 0; y < this.grid.length; y++) {
       for (let x = 0; x < this.grid[y].length; x++) {
@@ -1720,6 +1786,8 @@ class GridGen {
       }
     }
   }
+
+  //runs an A* algorithm on the map based on two input valuses and returns the path between them if possible//
   pathfind(start,end){
     let pathfindArray = []
     let path = [];
@@ -1863,6 +1931,7 @@ class GridGen {
   }
 }
 
+//used in pathfinding to keep track of the tiles A* data//
 class PathFindTile{
   constructor(x1,y1,g1,h1,parentArray1){      
     this.x = x1;

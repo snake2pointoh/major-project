@@ -1,7 +1,9 @@
 
+//used for the hotbar to check if a number was pressed//
 numbers = [1,2,3,4,5,6,7,8,9];
 
 function keyTyped() {
+  //updates the selected text box//
   if (scene === "editor") {
     if(edditorMenu === "map"){
       if (doorWorldId.focused) {
@@ -36,6 +38,8 @@ function keyTyped() {
       }
     }
   }
+
+  //checks what number was pressed and equips that item in the hotbar//
   if(scene === "game"){
     for (let i = 0; i < numbers.length; i++) {
       if(key == numbers[i]){
@@ -46,14 +50,17 @@ function keyTyped() {
 }
 
 function keyPressed() {
+  //shows debug shapes//
   if (key === "t") {
     showDebug = !showDebug
   }
 
+  //pause and unpause//
   if (keyCode === ESCAPE && scene !== "menu") {
     paused = !paused
   }
 
+  //handles pressing enter and backspase for the selected text box//
   if (scene === "editor") {
     if(edditorMenu === "map"){
       if(selectedTextureList === "doors"){
@@ -122,6 +129,8 @@ function keyPressed() {
       }
     }
   }
+
+  //controls opening inventory and picking up items//
   if (scene === "game") {
     if (key === "e" && !paused) {
       Player.Inv.invOpen = !Player.Inv.invOpen;
@@ -138,8 +147,10 @@ function keyPressed() {
   }
 }
 
+//handles all mouse presses for things like buttons or selecting text boxes based on what scene is being displayed//
 function mouseClicked() {
   let mouseOnUi = false;
+
   if (scene === "editor") {
     mouseOnUi = false;
     for (let j = 0; j < edditorUiBackground.length; j++) {
@@ -366,7 +377,6 @@ function mouseClicked() {
       if(newMapEditorButtons[1].mouseOn()){
           mapList.splice(currentMap, 1)
           currentMap = 0;
-          //mapSelectorList.array = mapList
           mapSelectorList.update()
       }
 
@@ -374,7 +384,7 @@ function mouseClicked() {
         currentMap = mapSelectorList.mouseOn();
       }
     }
-    //save load//UPDATE FOR 2D ARRAY
+    //save load//
     if (Buttons[0].mouseOn()) { //save//
       let items = [[],[],[],[]];
       saveLoad = []
@@ -386,7 +396,6 @@ function mouseClicked() {
           }
         }
       }
-      //worldItems = [[],[],[],[]]; //sword, bow, staff, potion//array order//
       for (let y = 0; y < worldItems.length; y++) {
         for (let x = 0; x < worldItems[y].length; x++) {
 
@@ -453,11 +462,9 @@ function mouseClicked() {
     }
 
     if (Buttons[1].mouseOn()) { //load//
-      //make better//
       loadJSON("assets/MapSaveData.json", loadMap)
     }
     if (Buttons[2].mouseOn()) { //load//
-      //make better//
       loadMap(json);
     }
 

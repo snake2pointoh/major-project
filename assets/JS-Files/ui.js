@@ -1,5 +1,5 @@
 
-
+//displays item editor ui//
 function itemEditorUi() {
   for (let i = 0; i < itemEdditorButtons.length; i++) {
     itemEdditorButtons[i].draw()
@@ -29,6 +29,7 @@ function itemEditorUi() {
   customItemList.draw()
 }
 
+//displays map edditor ui//
 function mapEditorUi(){
   for(let i = 0; i < edditorMapMenuButtons.length; i++){
     edditorMapMenuButtons[i].draw()
@@ -75,12 +76,14 @@ function mapEditorUi(){
   }
 }
 
+//displays menu ui//
 function menuUi(){
   for(let i = 0; i < menuButtons.length; i++){
     menuButtons[i].draw()
   }
 }
 
+//displays editor ui//
 function editorUi() {
   for (let i = 0; i < edditorUiBackground.length; i++) {
     edditorUiBackground[i].draw()
@@ -93,6 +96,7 @@ function editorUi() {
   }
 }
 
+//displays new map creator ui//
 function newMapEditorUi(){
   for (let i = 0; i < newMapEditorText.length; i++) {
     newMapEditorText[i].draw()
@@ -107,6 +111,7 @@ function newMapEditorUi(){
   mapSelectorList.draw()
 }
 
+//displays game ui//
 function gameUi(){
   push()
   rect(10,height-130, 300,100)
